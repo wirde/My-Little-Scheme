@@ -1,5 +1,10 @@
 package com.wirde.myscheme;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Main {
 
 	private static final String[] expressions = {
@@ -37,14 +42,52 @@ public class Main {
 		};	
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Parser parser = new Parser();
 		Environment env = new Environment();
+		
+		readPrimitives(parser, env, "src/com/wirde/myscheme/primitives.scm");
 		
 		for (String str : expressions) {
 			Node exp = parser.parseExpression(str);
 			System.out.println(exp);
 			System.out.println(" -- " + exp.eval(env));
+		}
+		
+		startRepl(parser, env);
+	}
+
+
+	private static void readPrimitives(Parser parser, Environment env, String file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = reader.readLine();;
+		while (line != null) {
+			Node exp = parser.parseExpression(line);
+			System.out.println(exp.eval(env));
+			line = reader.readLine();
+		}
+	}
+
+
+	private static void startRepl(Parser parser, Environment env) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String line = "";
+		while (true) {
+			try {
+				System.out.print("> ");
+				line += reader.readLine();
+				if ("".equals(line))
+					continue;
+				Node result = parser.parseExpression(line);
+				System.out.println(result.eval(env));
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (NoMoreTokensException e) {
+				continue;
+			} catch (RuntimeException e) {
+				e.printStackTrace();				
+			}
+			line = "";
 		}
 	}
 

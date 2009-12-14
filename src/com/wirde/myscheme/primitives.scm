@@ -1,0 +1,1 @@
+(define display print)

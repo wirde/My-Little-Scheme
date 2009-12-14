@@ -144,7 +144,7 @@ public class Environment {
 		builtins.put("cdr", new Proc() {
 			@Override
 			Node apply(Cons args, Environment env) {
-				return ((Cons) args.getFirst()).getRestAsCons();
+				return ((Cons) args.getFirst()).getRest();
 			}});
 		
 		//Variables

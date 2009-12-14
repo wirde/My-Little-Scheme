@@ -53,7 +53,7 @@ public class Parser {
 	private Cons parseList() {
 		
 		if (!scanner.hasMoreTokens())
-			throw new ParseException("Ran out of tokens");
+			throw new NoMoreTokensException("");
 		
 		Token token = scanner.getNextToken();
 		

@@ -301,7 +301,7 @@ abstract class Proc extends Node {
 
 	@Override
 	String print(int position) {
-		return "No toString for Func";
+		return "#<native procedure>";
 	}
 	
     @Override
@@ -336,6 +336,9 @@ class Lambda extends Proc {
 		bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
 	}
 	
+	public String toString() {
+		return "#<procedure>";
+	}
 }
 
 
