@@ -41,7 +41,7 @@ public class Parser {
 	private Scanner scanner;
 
 	public Node parseExpression(String expression) {
-		scanner = new Scanner(expression.toLowerCase());
+		scanner = new Scanner(expression);
 		Node node = null;
 		if (scanner.hasMoreTokens()) {
 			node = parseToken(scanner.getNextToken());
@@ -86,7 +86,7 @@ public class Parser {
 		case INT:
 			return new IntLit(((IntToken) token).intVal);
 		case IDENT:
-			return new Ident(((IdentToken) token).name);
+			return new Ident(((IdentToken) token).name.toLowerCase());
 		case TRUET:
 			return BoolLit.TRUE;
 		case FALSET:

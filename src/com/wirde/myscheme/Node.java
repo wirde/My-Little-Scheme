@@ -173,6 +173,10 @@ class Cons extends Node {
         return getRestAsCons().getRestAsCons().first;
     }
     
+    Node getFourth() {
+    	return getRestAsCons().getRestAsCons().getRestAsCons().first;
+    }
+    
     Cons getRestAsCons() {
         return (Cons) rest;
     }
@@ -192,6 +196,11 @@ class Cons extends Node {
             return NIL;
 		case LAMBDA:
 			return new Lambda((Cons) getSecond(), getThird());
+		case IF:
+			if (BoolLit.TRUE.equals(getSecond().eval(env)))
+				return getThird().eval(env);
+			else
+				return getFourth().eval(env);
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -265,8 +274,12 @@ class Cons extends Node {
 	private String printRegular(int position) {
 		String result = "(";
 		Cons currCons = this;
-		while (currCons != null) {
-			if (currCons.getFirst() != null) result += currCons.getFirst().toString() + " ";
+		while (currCons != Cons.NIL) {
+			result += currCons.getFirst().toString() + " ";
+			if (!(currCons.rest instanceof Cons)) {
+				result += ". " + currCons.rest;
+				break;
+			}
 			currCons = currCons.getRestAsCons();
 		} 
 		result = result.trim();

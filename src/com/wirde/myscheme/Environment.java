@@ -89,6 +89,25 @@ public class Environment {
 						return new IntLit(result);
 					}});
 
+		builtins.put("*", new Proc() {
+			@Override
+			Node apply(Cons args, Environment env) {
+				int result = 1;
+				do {
+					if (args != null && args.getFirst() != null) {
+						if (args.getFirst() instanceof IntLit) {
+							result *= ((IntLit) args.getFirst()).getIntVal();
+						} else {
+							throw new EvalException("Expected int, got: " + args.getFirst());
+						}
+						args = args.getRestAsCons();
+					} else {
+						throw new EvalException("Error applying: " + args);
+					}
+				} while (args != Cons.NIL);
+				return new IntLit(result);
+			}});
+				
 		builtins.put("=", new Proc() {
 			@Override
 			Node apply(Cons args, Environment env) {
@@ -97,6 +116,7 @@ public class Environment {
 				else
 					return BoolLit.FALSE;
 			}});
+		
 		builtins.put("print", new Proc() {
             @Override
             Node apply(Cons args, Environment env) {

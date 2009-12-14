@@ -3,7 +3,7 @@ package com.wirde.myscheme;
 public class Main {
 
 	private static final String[] expressions = {
-		"(define first (cons (- 2 1) nil))",
+		"(DEFINE first (cons (- 2 1) nil))",
 		"(cons 2 first)",
 		"(define three (cons 3 (cons 2 first)))",
 		"three",
@@ -19,16 +19,20 @@ public class Main {
 		"(define x 1)",
 		"(define f (lambda (x) (+ 1 x)))",
 		"(f (+ 1 2))",
-//		"(cons 1 2)"
-//		"(+ 1 2 (+ 1 2) (+ 2 i))",
-//		"(- 7 2 1 (+ 1 2))",
-//		"(print \"HELLO_WORLD\")",
-//		"42",
+		"(if #f (print \"true\") (print \"false\"))",
+		"(+ 1 2 (+ 1 2) (- 1 2))",
+		"(* 7 7 2)",
+		"(cons 1 2)",
+		"(- 7 2 1 (+ 1 2))",
+		"(print \"HELLO_WORLD\")",
+//		"(print \"HELLO WORLD\")",
+		"42",
 //		"'#t",
-//		"#f",
-//		"\"FOO\"",
-//		"(if #t \"42\" x)",
-//		"(define (fac n) (if (= n 0) 1 (* n (fac (- n 1)))))",
+		"#f",
+		"\"FOO\"",
+		"(if #t \"42\" x)",
+		"(define fac (lambda (n) (if (= n 0) 1 (* n (fac (- n 1))))))",
+		"(fac 4)"
 //		"'(1 2 3)",
 		};	
 	
