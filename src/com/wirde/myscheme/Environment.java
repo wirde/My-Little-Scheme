@@ -7,14 +7,24 @@ public class Environment {
 	
 	private Map<String, Node> builtins = new HashMap<String, Node>();
 	
+	private Environment parent;
+	
+	public Environment(Environment parent) {
+		this.parent = parent;
+	}
+	
 	public Environment() {
 		addBuiltins();
 	}
 
 	public Node lookup(Ident ident) {
 		Node res = builtins.get(ident.getName());
-		if (res == null)
-			throw new EvalException("Unbound identifier: " + ident);
+		if (res == null) {
+			if (parent == null)
+				throw new EvalException("Unbound identifier: " + ident);
+			else
+				return parent.lookup(ident);
+		}
 		return res;
 	}
 

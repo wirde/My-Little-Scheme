@@ -78,25 +78,20 @@ public class Parser {
 	}
 	
 	private Node parseToken(Token token) {
-		if (token.type == TokenType.LPAREN) {
+		switch (token.type) {
+		case LPAREN:
 			return parseList();
-		} 
-		if (token.type == TokenType.QUOTE) {
+		case QUOTE:
 			return parseQuoted();
-		}		
-		if (token.type == TokenType.INT) {
+		case INT:
 			return new IntLit(((IntToken) token).intVal);
-		} 
-		if (token.type == TokenType.IDENT) {
+		case IDENT:
 			return new Ident(((IdentToken) token).name);
-		}
-		if (token.type == TokenType.TRUET) {
+		case TRUET:
 			return BoolLit.TRUE;
-		}
-		if (token.type == TokenType.FALSET) {
+		case FALSET:
 			return BoolLit.FALSE;
-		}
-		if (token.type == TokenType.STRING) {
+		case STRING:
 			return new StrLit(((StrToken) token).strVal);
 		}
 		throw new ParseException("Unrecognized token: " + token);

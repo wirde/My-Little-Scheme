@@ -190,6 +190,8 @@ class Cons extends Node {
 		case DEFINE:
             env.assoc(((Ident) getSecond()), getThird().eval(env));
             return NIL;
+		case LAMBDA:
+			return new Lambda((Cons) getSecond(), getThird());
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -217,6 +219,9 @@ class Cons extends Node {
 			return printIf(position);
 		case QUOTED:
 			return printQuoted(position);
+		case LAMBDA:
+			//TODO: Pretty print
+			return printRegular(position);
 		default:
 			throw new EvalException("Unknown special form: " + special);
 		}
@@ -294,12 +299,35 @@ abstract class Proc extends Node {
 	abstract Node apply(Cons args, Environment env);
 }
 
-abstract class Lambda extends Proc {
+class Lambda extends Proc {
+
+	private final Node body;
+	private final Cons params;
+
+	public Lambda(Cons params, Node body) {
+		this.params = params;
+		this.body = body;
+	}
+
+	@Override
+	Node apply(Cons args, Environment env) {
+		Environment frame = new Environment(env);
+		bindArgumentsToFrame(args, params, frame);
+		return body.eval(frame);
+	}
+
+	private void bindArgumentsToFrame(Cons args, Cons params, Environment frame) {
+		if (args == Cons.NIL)
+			return;
+		frame.assoc((Ident) params.getFirst(), args.getFirst().eval(frame));
+		bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
+	}
+	
 }
 
 
 enum SpecialForm {
-	REGULAR, DEFINE, IF, QUOTED;
+	REGULAR, DEFINE, IF, QUOTED, LAMBDA;
 
 	public static SpecialForm toSpecialForm(Cons cons) {
 		Node first = cons.getFirst();
@@ -312,6 +340,8 @@ enum SpecialForm {
 			return IF;
 		if ("quote".equals(name))
 			return QUOTED;
+		if("lambda".equals(name))
+			return LAMBDA;
 		return REGULAR;
 	}
 }
