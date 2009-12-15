@@ -356,15 +356,20 @@ class Lambda extends Proc {
 	@Override
 	Node apply(Cons args, Environment env) {
 		Environment frame = new Environment(env);
-		bindArgumentsToFrame(args, params, frame);
+		Cons rest = bindArgumentsToFrame(args, params, frame);
+		//TODO: Attempt at currying. Does not work because the previous environment is not captured...
+		if (!rest.equals(Cons.NIL))
+			return new Lambda(rest, body);
 		return body.eval(frame);
 	}
 
-	private void bindArgumentsToFrame(Cons args, Cons params, Environment frame) {
+	private Cons bindArgumentsToFrame(Cons args, Cons params, Environment frame) {
 		if (args == Cons.NIL)
-			return;
+			return params;
+		if (params == Cons.NIL)
+			return Cons.NIL;
 		frame.assoc((Ident) params.getFirst(), args.getFirst());
-		bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
+		return bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
 	}
 	
 	public String toString() {

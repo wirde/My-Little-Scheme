@@ -17,17 +17,18 @@ public class Main {
 	private static void startRepl(Parser parser, Environment env) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line = "";
-		while (line != null) {
+		while (true) {
 			try {
 				System.out.print("> ");
 				String nextLine = reader.readLine();
-				if ("".equals(nextLine) || nextLine == null) {
-					line = null;
-					continue;
+				if (nextLine == null) {
+					break;
 				}
 				line += nextLine;
-				Node result = parser.parseExpression(line);
-				System.out.println(result.eval(env));
+				Node exp = parser.parseExpression(line);
+				if (exp == null)
+					continue;
+				System.out.println(exp.eval(env));
 			} catch (NoMoreTokensException e) {
 				continue;
 			} catch (IOException e) {
