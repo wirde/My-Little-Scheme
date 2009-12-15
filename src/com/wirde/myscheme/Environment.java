@@ -1,5 +1,9 @@
 package com.wirde.myscheme;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +34,36 @@ public class Environment {
 
 	public void assoc(Ident ident, Node value) {
 		builtins.put(ident.getName(), value);
+	}
+	
+	public void evalFile(Parser parser, String file) throws IOException {
+		evalFile(parser, file, null);
+	}
+	
+	public void evalFile(Parser parser, String file, PrintStream out) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = "";
+		while (true) {
+			String nextLine = reader.readLine();
+			if (nextLine == null) {
+				break;
+			}
+			line += nextLine;
+			try {
+				Node exp = parser.parseExpression(line);
+				if (exp == null)
+					continue;
+				
+				Node res = exp.eval(this);
+				if (out != null)
+					out.println(res);
+				line = "";
+			} catch (NoMoreTokensException e) {
+				//Read more
+			}
+		}
+		if (!"".equals(line))
+			throw new ParseException("Error parsing: " + line);
 	}
 	
 	private void addBuiltins() {

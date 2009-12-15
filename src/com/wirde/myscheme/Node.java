@@ -295,6 +295,37 @@ class Cons extends Node {
 		}
 		return retVal;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((first == null) ? 0 : first.hashCode());
+		result = prime * result + ((rest == null) ? 0 : rest.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Cons))
+			return false;
+		Cons other = (Cons) obj;
+		if (first == null) {
+			if (other.first != null)
+				return false;
+		} else if (!first.equals(other.first))
+			return false;
+		if (rest == null) {
+			if (other.rest != null)
+				return false;
+		} else if (!rest.equals(other.rest))
+			return false;
+		return true;
+	}
 }
 
 abstract class Proc extends Node {

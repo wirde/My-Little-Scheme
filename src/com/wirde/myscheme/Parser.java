@@ -4,12 +4,16 @@ import java.util.StringTokenizer;
 
 class Scanner {
 	private final StringTokenizer tokenizer;
+	private String originalExp;
 	
-	public Scanner(String code) {
-		tokenizer = new StringTokenizer(code, " \n\t()'.", true);
+	public Scanner(String exp) {
+		tokenizer = new StringTokenizer(exp, " \n\t()'.", true);
+		originalExp = exp;
 	}
 	
 	public Token getNextToken() {
+		if (!hasMoreTokens())
+			throw new NoMoreTokensException("Error parsing expression: " + originalExp + " no more tokens.");
 		String strToken = tokenizer.nextToken();
 		if (strToken == null) return null;
 		if (strToken.matches("\\s")) return getNextToken();		
@@ -34,6 +38,10 @@ class Scanner {
 	public boolean hasMoreTokens() {
 		return tokenizer.hasMoreTokens();
 	}
+	
+	public String getOriginalExp() {
+		return originalExp;
+	}
 }
 
 public class Parser { 
@@ -53,7 +61,7 @@ public class Parser {
 	private Cons parseList() {
 		
 		if (!scanner.hasMoreTokens())
-			throw new NoMoreTokensException("");
+			throw new NoMoreTokensException("Error parsing expression: " + scanner.getOriginalExp() + " no more tokens.");
 		
 		Token token = scanner.getNextToken();
 		
@@ -94,6 +102,6 @@ public class Parser {
 		case STRING:
 			return new StrLit(((StrToken) token).strVal);
 		}
-		throw new ParseException("Unrecognized token: " + token);
+		throw new ParseException("Unrecognized token: " + token + " when parsing expression: " + scanner.getOriginalExp());
 	}
 }
