@@ -332,7 +332,7 @@ class Lambda extends Proc {
 	private void bindArgumentsToFrame(Cons args, Cons params, Environment frame) {
 		if (args == Cons.NIL)
 			return;
-		frame.assoc((Ident) params.getFirst(), args.getFirst().eval(frame));
+		frame.assoc((Ident) params.getFirst(), args.getFirst());
 		bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
 	}
 	

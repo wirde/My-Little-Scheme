@@ -60,11 +60,12 @@ public class Main {
 
 	private static void readPrimitives(Parser parser, Environment env, String file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = reader.readLine();;
+		String line = "";
 		while (line != null) {
-			Node exp = parser.parseExpression(line);
-			System.out.println(exp.eval(env));
 			line = reader.readLine();
+			if ("".equals(line) || line == null)
+				continue;
+			parser.parseExpression(line).eval(env);
 		}
 	}
 
@@ -72,18 +73,21 @@ public class Main {
 	private static void startRepl(Parser parser, Environment env) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line = "";
-		while (true) {
+		while (line != null) {
 			try {
 				System.out.print("> ");
-				line += reader.readLine();
-				if ("".equals(line))
+				String nextLine = reader.readLine();
+				if ("".equals(nextLine) || nextLine == null) {
+					line = null;
 					continue;
+				}
+				line += nextLine;
 				Node result = parser.parseExpression(line);
 				System.out.println(result.eval(env));
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (NoMoreTokensException e) {
 				continue;
+			} catch (IOException e) {
+				e.printStackTrace();
 			} catch (RuntimeException e) {
 				e.printStackTrace();				
 			}
