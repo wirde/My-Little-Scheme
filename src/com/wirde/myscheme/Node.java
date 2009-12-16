@@ -192,10 +192,17 @@ class Cons extends Node {
             Proc proc = (Proc) first.eval(env);        
             return proc.apply(evaluateList(getRestAsCons(), env), env);
 		case DEFINE:
-            env.assoc(((Ident) getSecond()), getThird().eval(env));
+			Node definee = getSecond();
+			if (definee instanceof Ident)
+				env.assoc((Ident) definee, getThird().eval(env));
+			else if (definee instanceof Cons) {
+				Cons lambdaDef = (Cons) definee;
+				env.assoc((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
+			} else
+				throw new EvalException("Expected Ident or Cons. Got" + definee.getClass());
             return NIL;
 		case LAMBDA:
-			return new Lambda(getSecond(), getThird(), env);
+			return new Lambda(getSecond(), getRestAsCons().getRestAsCons(), env);
 		case IF:
 			if (BoolLit.TRUE.equals(getSecond().eval(env)))
 				return getThird().eval(env);
@@ -345,11 +352,11 @@ abstract class Proc extends Node {
 
 class Lambda extends Proc {
 
-	private final Node body;
+	private final Cons body;
 	private final Node params;
 	private final Environment capturedEnv;
 
-	public Lambda(Node params, Node body, Environment env) {
+	public Lambda(Node params, Cons body, Environment env) {
 		this.params = params;
 		this.body = body;
 		capturedEnv = env;
@@ -360,17 +367,20 @@ class Lambda extends Proc {
 		Environment frame = new Environment(capturedEnv);
 		
 		Cons rest = bindArgumentsToFrame(args, params, frame);
+		//Currying works, but is not allowed in Scheme (in this form)
 		if (!rest.equals(Cons.NIL)) {
 			Lambda curriedLambda = new Lambda(rest, body, frame);
 			return curriedLambda;
 		}
-		return body.eval(frame);
+		//Evaluate the expressions in the body
+		Cons next = body;
+		Node result = null;
+		while (next != Cons.NIL) {
+			result = next.getFirst().eval(frame);
+			next = next.getRestAsCons();
+		}
+		return result;
 	}
-	
-	@Override
-    Node eval(Environment env) {
-        return this;
-    }
 
 	private Cons bindArgumentsToFrame(Cons args, Node params, Environment frame) {
 		if (params instanceof Cons) {

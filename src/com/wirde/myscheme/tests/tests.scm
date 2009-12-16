@@ -10,10 +10,10 @@
 (test 5 (+ 1 2 (+ 1 2) (- 1 2)))
 (test 98 (* 7 7 2))
 
-(define fac (lambda (n) (if (= n 0) 1 (* n (fac (- n 1))))))
+(define (fac n) (if (= n 0) 1 (* n (fac (- n 1)))))
 (test 24 (fac 4))
 
-(DEFINE first (cons (- 2 1) nil))
+(define first (cons (- 2 1) nil))
 (test (cons 1 nil) first)
 
 (define three (cons 3 (cons 2 first)))
@@ -33,9 +33,11 @@
 
 (define x 1)
 
-(define f (lambda () x))
+(define (f) x)
 (define g (lambda (f x) (f)))
 (test 1 (f))
 (test 1 (g f 2))
+
+(test 10 (reduce + (list 1 2 3 4) 0))
 
 (display "Tests_done")
