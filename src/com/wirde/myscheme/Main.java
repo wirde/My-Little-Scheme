@@ -19,12 +19,13 @@ public class Main {
 		String line = "";
 		while (true) {
 			try {
-				System.out.print("> ");
+				if ("".equals(line))
+				       System.out.print("> ");
 				String nextLine = reader.readLine();
 				if (nextLine == null) {
 					break;
 				}
-				line += nextLine;
+				line += "\n" + nextLine;
 				Node exp = parser.parseExpression(line);
 				if (exp == null)
 					continue;

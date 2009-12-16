@@ -195,7 +195,7 @@ class Cons extends Node {
             env.assoc(((Ident) getSecond()), getThird().eval(env));
             return NIL;
 		case LAMBDA:
-			return new Lambda((Cons) getSecond(), getThird());
+			return new Lambda(getSecond(), getThird(), env);
 		case IF:
 			if (BoolLit.TRUE.equals(getSecond().eval(env)))
 				return getThird().eval(env);
@@ -346,32 +346,47 @@ abstract class Proc extends Node {
 class Lambda extends Proc {
 
 	private final Node body;
-	private final Cons params;
+	private final Node params;
+	private final Environment capturedEnv;
 
-	public Lambda(Cons params, Node body) {
+	public Lambda(Node params, Node body, Environment env) {
 		this.params = params;
 		this.body = body;
+		capturedEnv = env;
 	}
 
 	@Override
 	Node apply(Cons args, Environment env) {
-		Environment frame = new Environment(env);
+		Environment frame = new Environment(capturedEnv);
+		
 		Cons rest = bindArgumentsToFrame(args, params, frame);
-		//TODO: Attempt at currying. Does not work because the previous environment is not captured...
-		if (!rest.equals(Cons.NIL))
-			return new Lambda(rest, body);
+		if (!rest.equals(Cons.NIL)) {
+			Lambda curriedLambda = new Lambda(rest, body, frame);
+			return curriedLambda;
+		}
 		return body.eval(frame);
 	}
-
-	private Cons bindArgumentsToFrame(Cons args, Cons params, Environment frame) {
-		if (args == Cons.NIL)
-			return params;
-		if (params == Cons.NIL)
-			return Cons.NIL;
-		frame.assoc((Ident) params.getFirst(), args.getFirst());
-		return bindArgumentsToFrame(args.getRestAsCons(), params.getRestAsCons(), frame);
-	}
 	
+	@Override
+    Node eval(Environment env) {
+        return this;
+    }
+
+	private Cons bindArgumentsToFrame(Cons args, Node params, Environment frame) {
+		if (params instanceof Cons) {
+			Cons paramsCons = (Cons) params;
+			if (args == Cons.NIL)
+				return paramsCons;
+			if (params == Cons.NIL)
+				return Cons.NIL;
+			frame.assoc((Ident) paramsCons.getFirst(), args.getFirst());
+			return bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRestAsCons(), frame);
+		} else {
+			frame.assoc((Ident) params, args);
+			return Cons.NIL;
+		}
+	}
+
 	public String toString() {
 		return "#<procedure>";
 	}

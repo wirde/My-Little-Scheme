@@ -10,6 +10,6 @@ public class TestInterpreter {
 		Parser parser = new Parser();
 		Environment env = new Environment();
 		env.evalFile(parser, "src/com/wirde/myscheme/primitives.scm");
-		env.evalFile(parser, "src/com/wirde/myscheme/tests/tests.scm");
+		env.evalFile(parser, "src/com/wirde/myscheme/tests/tests.scm", System.out);
 	}
 }

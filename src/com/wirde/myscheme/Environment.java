@@ -65,6 +65,10 @@ public class Environment {
 		if (!"".equals(line))
 			throw new ParseException("Error parsing: " + line);
 	}
+
+	public void setParent(Environment env) {
+		parent = env;
+	}
 	
 	private void addBuiltins() {
 		
@@ -184,5 +188,4 @@ public class Environment {
 		//Variables
 		builtins.put("nil", Cons.NIL);
 	}
-
 }

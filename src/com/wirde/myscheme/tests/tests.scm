@@ -4,8 +4,8 @@
 
 (define test (lambda (expected exp) 
 	(if (= expected exp)
-		(display "OK")
-		(display "Fail"))))
+		"OK"
+		"Fail")))
 
 (test 5 (+ 1 2 (+ 1 2) (- 1 2)))
 (test 98 (* 7 7 2))
@@ -31,5 +31,11 @@
 (test #t (= "str" "str"))
 (test #t (= + +))
 
+(define x 1)
+
+(define f (lambda () x))
+(define g (lambda (f x) (f)))
+(test 1 (f))
+(test 1 (g f 2))
 
 (display "Tests_done")
