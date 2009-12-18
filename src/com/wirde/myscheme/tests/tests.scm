@@ -2,7 +2,8 @@
 (define nrOK 0)
 (define nrFail 0)
 
-(define test (lambda (expected exp) 
+(define test (lambda (expected exp)
+	(print exp) 
 	(if (= expected exp)
 		"OK"
 		"Fail")))
@@ -11,6 +12,7 @@
 (test 98 (* 7 7 2))
 
 (define (fac n) (if (= n 0) 1 (* n (fac (- n 1)))))
+
 (test 24 (fac 4))
 
 (define first (cons (- 2 1) nil))

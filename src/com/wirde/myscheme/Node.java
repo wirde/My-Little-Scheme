@@ -208,6 +208,8 @@ class Cons extends Node {
 				return getThird().eval(env);
 			else
 				return getFourth().eval(env);
+		case QUOTED:
+			return getSecond();
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -244,15 +246,14 @@ class Cons extends Node {
 	}
 
 	private String printQuoted(int position) {
-		return printRegular(position);
-//		String result = "'(";
-//		Cons currCons = this;
-//		while (currCons != null) {
-//			if (currCons.getFirst() != null) result += currCons.getFirst().toString() + " ";
-//			currCons = currCons.getRestAsCons();
-//		} 
-//		result = result.trim();
-//		return getIndent(position) + result + ")";
+		String result = "'(";
+		Cons currCons = this;
+		while (currCons != null) {
+			if (currCons.getFirst() != null) result += currCons.getFirst().toString() + " ";
+			currCons = currCons.getRestAsCons();
+		} 
+		result = result.trim();
+		return getIndent(position) + result + ")";
 	}
 
 	private String printIf(int position) {
