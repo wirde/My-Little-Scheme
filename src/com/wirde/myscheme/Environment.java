@@ -76,7 +76,7 @@ public class Environment {
 		builtins.put("+", 
 		new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				int result = 0;
 				do {
 					if (args != null && args.getFirst() != null) {
@@ -96,7 +96,7 @@ public class Environment {
 		builtins.put("-", 
 				new Proc() {
 					@Override
-					Node apply(Cons args, Environment env) {
+					Node apply(Cons args) {
 						if (args == null || args.length() == 0)
 							throw new EvalException("Expected at least 1 argument, got 0");
 						if (args.length() == 1) {
@@ -129,7 +129,7 @@ public class Environment {
 
 		builtins.put("*", new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				int result = 1;
 				do {
 					if (args != null && args.getFirst() != null) {
@@ -148,7 +148,7 @@ public class Environment {
 				
 		builtins.put("=", new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				if (args.getFirst().equals(args.getSecond()))
 					return BoolLit.TRUE;
 				else
@@ -157,7 +157,7 @@ public class Environment {
 		
 		builtins.put("print", new Proc() {
             @Override
-            Node apply(Cons args, Environment env) {
+            Node apply(Cons args) {
                 while(args != Cons.NIL) {
                     System.out.print(args.getFirst() + " ");
                     args = args.getRestAsCons();
@@ -169,19 +169,19 @@ public class Environment {
 		
 		builtins.put("cons", new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				return new Cons(args.getFirst(), args.getSecond());
 			}});
 		
 		builtins.put("car", new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				return ((Cons) args.getFirst()).getFirst();
 			}});
 		
 		builtins.put("cdr", new Proc() {
 			@Override
-			Node apply(Cons args, Environment env) {
+			Node apply(Cons args) {
 				return ((Cons) args.getFirst()).getRest();
 			}});
 		

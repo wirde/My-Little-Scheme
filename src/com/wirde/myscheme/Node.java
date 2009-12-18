@@ -190,7 +190,7 @@ class Cons extends Node {
     	switch (special) {
 		case REGULAR:
             Proc proc = (Proc) first.eval(env);        
-            return proc.apply(evaluateList(getRestAsCons(), env), env);
+            return proc.apply(evaluateList(getRestAsCons(), env));
 		case DEFINE:
 			Node definee = getSecond();
 			if (definee instanceof Ident)
@@ -199,7 +199,7 @@ class Cons extends Node {
 				Cons lambdaDef = (Cons) definee;
 				env.assoc((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
 			} else
-				throw new EvalException("Expected Ident or Cons. Got" + definee.getClass());
+				throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), this);
             return NIL;
 		case LAMBDA:
 			return new Lambda(getSecond(), getRestAsCons().getRestAsCons(), env);
@@ -347,7 +347,7 @@ abstract class Proc extends Node {
         return this;
     }
     
-	abstract Node apply(Cons args, Environment env);
+	abstract Node apply(Cons args);
 }
 
 class Lambda extends Proc {
@@ -363,15 +363,11 @@ class Lambda extends Proc {
 	}
 
 	@Override
-	Node apply(Cons args, Environment env) {
+	Node apply(Cons args) {
 		Environment frame = new Environment(capturedEnv);
 		
-		Cons rest = bindArgumentsToFrame(args, params, frame);
-		//Currying works, but is not allowed in Scheme (in this form)
-		if (!rest.equals(Cons.NIL)) {
-			Lambda curriedLambda = new Lambda(rest, body, frame);
-			return curriedLambda;
-		}
+		bindArgumentsToFrame(args, params, frame);
+		
 		//Evaluate the expressions in the body
 		Cons next = body;
 		Node result = null;
@@ -382,18 +378,25 @@ class Lambda extends Proc {
 		return result;
 	}
 
-	private Cons bindArgumentsToFrame(Cons args, Node params, Environment frame) {
+	private void bindArgumentsToFrame(Cons args, Node params, Environment frame) {
 		if (params instanceof Cons) {
 			Cons paramsCons = (Cons) params;
-			if (args == Cons.NIL)
-				return paramsCons;
-			if (params == Cons.NIL)
-				return Cons.NIL;
+			if (args == Cons.NIL) {
+				if (params != Cons.NIL)
+					throw new EvalException("Too few arguments, expected: " + this.params, this);
+				return;
+			}
+			if (params == Cons.NIL) {
+				if (args != Cons.NIL)
+					throw new EvalException("Too many arguments, expected: " + this.params, this);
+				return;
+				}
 			frame.assoc((Ident) paramsCons.getFirst(), args.getFirst());
-			return bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRestAsCons(), frame);
+			bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRestAsCons(), frame);
 		} else {
+			if (args == Cons.NIL)
+				throw new EvalException("Expected argument");
 			frame.assoc((Ident) params, args);
-			return Cons.NIL;
 		}
 	}
 
