@@ -2,6 +2,13 @@ package com.wirde.myscheme;
 
 import java.util.StringTokenizer;
 
+import com.wirde.myscheme.node.BoolLit;
+import com.wirde.myscheme.node.Cons;
+import com.wirde.myscheme.node.Ident;
+import com.wirde.myscheme.node.IntLit;
+import com.wirde.myscheme.node.Node;
+import com.wirde.myscheme.node.StrLit;
+
 class Scanner {
 	private final StringTokenizer tokenizer;
 	private String originalExp;

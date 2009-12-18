@@ -1,0 +1,60 @@
+package com.wirde.myscheme.node;
+
+import com.wirde.myscheme.Environment;
+import com.wirde.myscheme.EvalException;
+
+
+public class Lambda extends Proc {
+
+	private final Cons body;
+	private final Node params;
+	private final Environment capturedEnv;
+
+	public Lambda(Node params, Cons body, Environment env) {
+		this.params = params;
+		this.body = body;
+		capturedEnv = env;
+	}
+
+	@Override
+	public Node apply(Cons args) {
+		Environment frame = new Environment(capturedEnv);
+		
+		bindArgumentsToFrame(args, params, frame);
+		
+		//Evaluate the expressions in the body
+		Cons next = body;
+		Node result = null;
+		while (next != Cons.NIL) {
+			result = next.getFirst().eval(frame);
+			next = next.getRestAsCons();
+		}
+		return result;
+	}
+
+	private void bindArgumentsToFrame(Cons args, Node params, Environment frame) {
+		if (params instanceof Cons) {
+			Cons paramsCons = (Cons) params;
+			if (args == Cons.NIL) {
+				if (params != Cons.NIL)
+					throw new EvalException("Too few arguments, expected: " + this.params, this);
+				return;
+			}
+			if (params == Cons.NIL) {
+				if (args != Cons.NIL)
+					throw new EvalException("Too many arguments, expected: " + this.params, this);
+				return;
+				}
+			frame.assoc((Ident) paramsCons.getFirst(), args.getFirst());
+			bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRestAsCons(), frame);
+		} else {
+			if (args == Cons.NIL)
+				throw new EvalException("Expected argument");
+			frame.assoc((Ident) params, args);
+		}
+	}
+
+	public String toString() {
+		return "#<procedure>";
+	}
+}

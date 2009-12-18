@@ -3,7 +3,6 @@
 (define nrFail 0)
 
 (define test (lambda (expected exp)
-	(print exp) 
 	(if (= expected exp)
 		"OK"
 		"Fail")))
