@@ -1,4 +1,5 @@
 (define display print)
+
 (define cadr (lambda (l) (car (cdr l))))
 
 (define list (lambda x x))

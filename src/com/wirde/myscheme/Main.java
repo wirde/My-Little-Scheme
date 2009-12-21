@@ -9,9 +9,8 @@ public class Main {
 	
 	
 	public static void main(String[] args) throws IOException {
-//		Parser parser = new Parser();
 		Environment env = new Environment();
-		env.evalFile("src/com/wirde/myscheme/primitives.scm", System.out);
+		env.evalFile("src/com/wirde/myscheme/primitives.scm");
 		startRepl(env);
 	}
 

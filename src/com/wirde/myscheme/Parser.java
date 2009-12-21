@@ -49,6 +49,7 @@ class Scanner {
 			currentLine = currentLine.substring(1, currentLine.length());
 			return new Token(TokenType.DOT);
 		}
+		//TODO: get strings back in
 //		if (strToken.matches("\".*\"$")) return new StrToken(strToken.substring(1, strToken.length() - 1));
 			
 		//TODO: can fail..
@@ -122,18 +123,8 @@ public class Parser {
 	public Parser(Reader reader) {
 		scanner = new Scanner(reader);
 	}
-
-	public Node parseExpression(String expression) throws IOException {
-		scanner = new Scanner(expression);
-		Node node = null;
-		if (scanner.hasMoreTokens()) {
-			node = parseToken(scanner.getNextToken());
-		}
-		return node;
-	}
 	
 	public Node parseNext() throws IOException {
-//		scanner = new Scanner(reader);
 		Node node = null;
 		if (scanner.hasMoreTokens()) {
 			node = parseToken(scanner.getNextToken());
