@@ -1,6 +1,5 @@
 package com.wirde.myscheme;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -10,36 +9,26 @@ public class Main {
 	
 	
 	public static void main(String[] args) throws IOException {
-		Parser parser = new Parser();
+//		Parser parser = new Parser();
 		Environment env = new Environment();
-		env.evalFile(parser, "src/com/wirde/myscheme/primitives.scm");
-		startRepl(parser, env);
+		env.evalFile("src/com/wirde/myscheme/primitives.scm", System.out);
+		startRepl(env);
 	}
 
-	private static void startRepl(Parser parser, Environment env) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		String line = "";
+	private static void startRepl(Environment env) {
+		Parser parser = new Parser(new InputStreamReader(System.in));
 		while (true) {
 			try {
-				if ("".equals(line))
-				       System.out.print("> ");
-				String nextLine = reader.readLine();
-				if (nextLine == null) {
-					break;
-				}
-				line += "\n" + nextLine;
-				Node exp = parser.parseExpression(line);
+				System.out.print("> ");
+				Node exp = parser.parseNext();
 				if (exp == null)
-					continue;
+					break;
 				System.out.println(exp.eval(env));
-			} catch (NoMoreTokensException e) {
-				continue;
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (RuntimeException e) {
 				e.printStackTrace();				
 			}
-			line = "";
 		}
 	}
 

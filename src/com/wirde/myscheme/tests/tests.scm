@@ -1,11 +1,12 @@
-(display "Starting_tests")
+;;Tests, baby steps...
+
 (define nrOK 0)
 (define nrFail 0)
 
 (define test (lambda (expected exp)
 	(if (= expected exp)
-		"OK"
-		"Fail")))
+		#t
+		#f)))
 
 (test 5 (+ 1 2 (+ 1 2) (- 1 2)))
 (test 98 (* 7 7 2))
@@ -29,7 +30,7 @@
 (test #t (= 1 1))
 (test #f (= #t #f))
 (test #t (= #t #t))
-(test #t (= "str" "str"))
+
 (test #t (= + +))
 
 (define x 1)
@@ -40,5 +41,3 @@
 (test 1 (g f 2))
 
 (test 10 (reduce + (list 1 2 3 4) 0))
-
-(display "Tests_done")

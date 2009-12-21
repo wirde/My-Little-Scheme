@@ -1,9 +1,9 @@
 package com.wirde.myscheme;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,34 +43,24 @@ public class Environment {
 		builtins.put(ident.getName(), value);
 	}
 	
-	public void evalFile(Parser parser, String file) throws IOException {
-		evalFile(parser, file, null);
+	public void evalFile(String file) throws IOException {
+		evalFile(file, null);
 	}
 	
-	public void evalFile(Parser parser, String file, PrintStream out) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = "";
+	public void evalFile(String file, PrintStream out) throws IOException {
+		Reader reader = new FileReader(file);
+		Parser parser = new Parser(reader);
 		while (true) {
-			String nextLine = reader.readLine();
-			if (nextLine == null) {
+			Node exp = parser.parseNext();
+			if (exp == null)
 				break;
-			}
-			line += nextLine;
-			try {
-				Node exp = parser.parseExpression(line);
-				if (exp == null)
-					continue;
-				
-				Node res = exp.eval(this);
-				if (out != null)
-					out.println(res);
-				line = "";
-			} catch (NoMoreTokensException e) {
-				//Read more
-			}
+
+			Node res = exp.eval(this);
+			if (out != null)
+				out.println(res);
 		}
-		if (!"".equals(line))
-			throw new ParseException("Error parsing: " + line);
+		if (reader.read() != -1)
+			throw new ParseException("Error reading file: " + file);
 	}
 
 	public void setParent(Environment env) {

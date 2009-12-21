@@ -132,8 +132,8 @@ public class Cons extends Node {
 		String result = getIndent(position) + "(" + getFirst() + " ";
 		result += getSecond() + "\n";
 		Cons currCons = getRestAsCons().getRestAsCons();
-		while (currCons != null) {
-			if (currCons.getFirst() != null) 
+		while (currCons != Cons.NIL) {
+			if (currCons.getFirst() != Cons.NIL) 
 				result += currCons.getFirst().print(position + 2) + "\n";
 			currCons = currCons.getRestAsCons();
 		}
