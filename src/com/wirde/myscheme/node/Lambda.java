@@ -25,7 +25,7 @@ public class Lambda extends Proc {
 		//Evaluate the expressions in the body
 		Cons next = body;
 		Node result = null;
-		while (next != Cons.NIL) {
+		while (!Cons.NIL.equals(next)) {
 			result = next.getFirst().eval(frame);
 			next = next.getRestAsCons();
 		}
@@ -35,20 +35,20 @@ public class Lambda extends Proc {
 	private void bindArgumentsToFrame(Cons args, Node params, Environment frame) {
 		if (params instanceof Cons) {
 			Cons paramsCons = (Cons) params;
-			if (args == Cons.NIL) {
-				if (params != Cons.NIL)
+			if (Cons.NIL == args) {
+				if (Cons.NIL != params)
 					throw new EvalException("Too few arguments, expected: " + this.params, this);
 				return;
 			}
-			if (params == Cons.NIL) {
-				if (args != Cons.NIL)
+			if (Cons.NIL == params) {
+				if (Cons.NIL != args)
 					throw new EvalException("Too many arguments, expected: " + this.params, this);
 				return;
 				}
 			frame.assoc((Ident) paramsCons.getFirst(), args.getFirst());
 			bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRestAsCons(), frame);
 		} else {
-			if (args == Cons.NIL)
+			if (Cons.NIL.equals(args))
 				throw new EvalException("Expected argument");
 			frame.assoc((Ident) params, args);
 		}

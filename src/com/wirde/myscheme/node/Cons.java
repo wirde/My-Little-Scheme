@@ -9,7 +9,7 @@ public class Cons extends Node {
     private final Node rest;
     
     public Cons() {
-        this(NIL, NIL);
+        this.first = this.rest = this;
     }
     
     public Cons(Node first, Node rest) {
@@ -48,9 +48,14 @@ public class Cons extends Node {
             Proc proc = (Proc) first.eval(env);        
             return proc.apply(evaluateList(getRestAsCons(), env));
 		case DEFINE:
+			if (Cons.NIL.equals(getRest()))
+				throw new EvalException("Expected identifier, got nil");
 			Node definee = getSecond();
-			if (definee instanceof Ident)
+			if (definee instanceof Ident) {
+				if (Cons.NIL.equals(getRestAsCons().getRest()))
+					throw new EvalException("Expected expression, got nil");
 				env.assoc((Ident) definee, getThird().eval(env));
+			}
 			else if (definee instanceof Cons) {
 				Cons lambdaDef = (Cons) definee;
 				env.assoc((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
@@ -75,7 +80,7 @@ public class Cons extends Node {
 		if (cons == null)
 			return null;
 		
-		if (cons == Cons.NIL)
+		if (Cons.NIL.equals(cons))
 			return (Cons) Cons.NIL;
 		
 		return new Cons(cons.getFirst().eval(env), evaluateList(cons.getRestAsCons(), env));
@@ -138,7 +143,7 @@ public class Cons extends Node {
 	private String printRegular(int position) {
 		String result = "(";
 		Cons currCons = this;
-		while (currCons != Cons.NIL) {
+		while (!Cons.NIL.equals(currCons)) {
 			result += currCons.getFirst().toString() + " ";
 			if (!(currCons.rest instanceof Cons)) {
 				result += ". " + currCons.rest;

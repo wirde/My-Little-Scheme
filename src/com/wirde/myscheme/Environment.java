@@ -96,7 +96,7 @@ public class Environment {
 					} else {
 						throw new EvalException("Error applying: " + args);
 					}
-				} while (args != Cons.NIL);
+				} while (!Cons.NIL.equals(args));
 				return new IntLit(result);
 			}});
 		
@@ -130,7 +130,7 @@ public class Environment {
 							} else {
 								throw new EvalException("Error applying: " + args);
 							}
-						} while (args != Cons.NIL);
+						} while (!Cons.NIL.equals(args));
 						return new IntLit(result);
 					}});
 
@@ -149,7 +149,7 @@ public class Environment {
 					} else {
 						throw new EvalException("Error applying: " + args);
 					}
-				} while (args != Cons.NIL);
+				} while (!Cons.NIL.equals(args));
 				return new IntLit(result);
 			}});
 				
@@ -165,7 +165,7 @@ public class Environment {
 		builtins.put("print", new Proc() {
             @Override
             public Node apply(Cons args) {
-                while(args != Cons.NIL) {
+                while (!Cons.NIL.equals(args)) {
                     System.out.print(args.getFirst() + " ");
                     args = args.getRestAsCons();
                 }
@@ -177,18 +177,24 @@ public class Environment {
 		builtins.put("cons", new Proc() {
 			@Override
 			public Node apply(Cons args) {
+				if (args.length() != 2)
+					throw new EvalException("Expected 2 arguments, got: " + args.length(), this);
 				return new Cons(args.getFirst(), args.getSecond());
 			}});
 		
 		builtins.put("car", new Proc() {
 			@Override
 			public Node apply(Cons args) {
+				if (args.length() != 1)
+					throw new EvalException("Expected 1 arguments, got: " + args.length(), this);
 				return ((Cons) args.getFirst()).getFirst();
 			}});
 		
 		builtins.put("cdr", new Proc() {
 			@Override
 			public Node apply(Cons args) {
+				if (args.length() != 1)
+					throw new EvalException("Expected 1 arguments, got: " + args.length(), this);
 				return ((Cons) args.getFirst()).getRest();
 			}});
 		
