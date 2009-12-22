@@ -15,21 +15,20 @@ import com.wirde.myscheme.node.StrLit;
 class Scanner {
 	private final BufferedReader reader;
 	private String currentLine;
-	
+
 	public Scanner(String exp) {
 		reader = new BufferedReader(new StringReader(exp));
 	}
-	
+
 	public Scanner(Reader in) {
 		reader = new BufferedReader(in);
 	}
-	
+
 	public Token getNextToken() throws IOException {
 		if (blank(currentLine))
 			getNextLine();
-		if (!hasMoreTokens())
-			throw new NoMoreTokensException("Error parsing expression, no more tokens.");
-		//Remove leading whitespace
+		if (currentLine == null)
+			return null;
 		currentLine = currentLine.replaceFirst("\\s*", "");
 		char firstChar = currentLine.charAt(0);
 		if (firstChar == '(') {
@@ -40,7 +39,8 @@ class Scanner {
 			currentLine = currentLine.substring(1, currentLine.length());
 			return new Token(TokenType.RPAREN);
 		}
-		if (firstChar == '#') return readBoolToken();
+		if (firstChar == '#')
+			return readBoolToken();
 		if (firstChar == '\'') {
 			currentLine = currentLine.substring(1, currentLine.length());
 			return new Token(TokenType.QUOTE);
@@ -49,18 +49,18 @@ class Scanner {
 			currentLine = currentLine.substring(1, currentLine.length());
 			return new Token(TokenType.DOT);
 		}
-		//TODO: get strings back in
-//		if (strToken.matches("\".*\"$")) return new StrToken(strToken.substring(1, strToken.length() - 1));
-			
-		//TODO: can fail..
+		// TODO: get strings back in
+		// if (strToken.matches("\".*\"$")) return new
+		// StrToken(strToken.substring(1, strToken.length() - 1));
+		// TODO: can fail..
 		try {
-			return readIntToken(); 
+			return readIntToken();
 		} catch (NumberFormatException e) {
-			//Not an Integer
+			// Not an Integer
 		}
 		return readIdentToken();
 	}
-	
+
 	private Token readIdentToken() {
 		String ident = "";
 		while (currentLine.matches("^[a-zA-Z0-9+-?\\*?/!].*")) {
@@ -105,50 +105,36 @@ class Scanner {
 				break;
 		}
 	}
-
-	public boolean hasMoreTokens() throws IOException {
-		if (!blank(currentLine))
-			return true;
-		reader.mark(1);
-		boolean endOfStream = -1 == reader.read();
-		reader.reset();
-		return !endOfStream;
-	}
 }
 
-public class Parser { 
-	
+public class Parser {
 	private Scanner scanner;
 
 	public Parser(Reader reader) {
 		scanner = new Scanner(reader);
 	}
-	
+
 	public Node parseNext() throws IOException {
-		Node node = null;
-		if (scanner.hasMoreTokens()) {
-			node = parseToken(scanner.getNextToken());
-		}
-		return node;
+		return parseToken(scanner.getNextToken());
 	}
 
-	//TODO: Cleanup
-	private Cons parseList() throws IOException {
-		
-		if (!scanner.hasMoreTokens())
-			throw new NoMoreTokensException("Error parsing expression, no more tokens.");
+	// TODO: Cleanup
+	private Node parseList() throws IOException {
 		Token token = scanner.getNextToken();
-		
-		if (token.type == TokenType.RPAREN) 
+		if (token.type == TokenType.RPAREN)
 			return Cons.NIL;
-			
 		if (token.type == TokenType.LPAREN) {
 			return new Cons(parseList(), parseList());
 		}
-		
+		if (token.type == TokenType.DOT) {
+			Node nextNode = parseToken(scanner.getNextToken());
+			if (scanner.getNextToken().type != TokenType.RPAREN)
+				throw new ParseException("Expected right paren");
+			return nextNode;
+		}
 		return new Cons(parseToken(token), parseList());
 	}
-	
+
 	private Node parseQuoted() throws IOException {
 		Token token = scanner.getNextToken();
 		Node node;
@@ -158,8 +144,10 @@ public class Parser {
 			node = parseToken(token);
 		return new Cons(new Ident("quote"), new Cons(node, Cons.NIL));
 	}
-	
+
 	private Node parseToken(Token token) throws IOException {
+		if (token == null)
+			return null;
 		switch (token.type) {
 		case LPAREN:
 			return parseList();
