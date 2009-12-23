@@ -72,7 +72,7 @@ public class Cons extends Node {
 		case QUOTED:
 			return getSecond();
 		case SET:
-//			getSecond().eval(env).setMe(getThird().eval(env));
+			env.set((Ident) getSecond(), getThird());
 			return Cons.NIL;
 		default:
 			throw new EvalException("Unkown Special form: " + special);

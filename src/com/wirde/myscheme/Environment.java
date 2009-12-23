@@ -16,7 +16,7 @@ import com.wirde.myscheme.node.Proc;
 
 public class Environment {
 	
-	private Map<String, Node> builtins = new HashMap<String, Node>();
+	private Map<String, Node> bindings = new HashMap<String, Node>();
 	
 	private Environment parent;
 	
@@ -29,7 +29,7 @@ public class Environment {
 	}
 
 	public Node lookup(Ident ident) {
-		Node res = builtins.get(ident.getName());
+		Node res = bindings.get(ident.getName());
 		if (res == null) {
 			if (parent == null)
 				throw new EvalException("Unbound identifier: " + ident);
@@ -41,13 +41,19 @@ public class Environment {
 
 	public void define(Ident ident, Node value) {
 		if (parent == null)
-			builtins.put(ident.getName(), value);
+			bindings.put(ident.getName(), value);
 		else
 			parent.define(ident, value);
 	}
 	
 	public void bind(Ident ident, Node value) {
-		builtins.put(ident.getName(), value);
+		bindings.put(ident.getName(), value);
+	}
+	
+	public void set(Ident ident, Node value) {
+		if (lookup(ident) == null)
+			throw new EvalException("Unbound variable: " + ident);
+		bind(ident, value);
 	}
 	
 	public void evalFile(String file) throws IOException {
@@ -77,7 +83,7 @@ public class Environment {
 	private void addBuiltins() {
 		
 		//Primitive functions
-		builtins.put("+", 
+		bindings.put("+", 
 		new Proc() {
 			@Override
 			public Node apply(Cons args) {
@@ -97,7 +103,7 @@ public class Environment {
 				return new IntLit(result);
 			}});
 		
-		builtins.put("-", 
+		bindings.put("-", 
 				new Proc() {
 					@Override
 					public Node apply(Cons args) {
@@ -131,7 +137,7 @@ public class Environment {
 						return new IntLit(result);
 					}});
 
-		builtins.put("*", new Proc() {
+		bindings.put("*", new Proc() {
 			@Override
 			public Node apply(Cons args) {
 				int result = 1;
@@ -150,7 +156,7 @@ public class Environment {
 				return new IntLit(result);
 			}});
 				
-		builtins.put("=", new Proc() {
+		bindings.put("=", new Proc() {
 			@Override
 			public Node apply(Cons args) {
 				if (args.getFirst().equals(args.getSecond()))
@@ -159,7 +165,7 @@ public class Environment {
 					return BoolLit.FALSE;
 			}});
 		
-		builtins.put("print", new Proc() {
+		bindings.put("print", new Proc() {
             @Override
             public Node apply(Cons args) {
                 while (!Cons.NIL.equals(args)) {
@@ -171,7 +177,7 @@ public class Environment {
             }
         });
 		
-		builtins.put("cons", new Proc() {
+		bindings.put("cons", new Proc() {
 			@Override
 			public Node apply(Cons args) {
 				if (args.length() != 2)
@@ -179,7 +185,7 @@ public class Environment {
 				return new Cons(args.getFirst(), args.getSecond());
 			}});
 		
-		builtins.put("car", new Proc() {
+		bindings.put("car", new Proc() {
 			@Override
 			public Node apply(Cons args) {
 				if (args.length() != 1)
@@ -187,7 +193,7 @@ public class Environment {
 				return ((Cons) args.getFirst()).getFirst();
 			}});
 		
-		builtins.put("cdr", new Proc() {
+		bindings.put("cdr", new Proc() {
 			@Override
 			public Node apply(Cons args) {
 				if (args.length() != 1)
@@ -196,6 +202,6 @@ public class Environment {
 			}});
 		
 		//Variables
-		builtins.put("nil", Cons.NIL);
+		bindings.put("nil", Cons.NIL);
 	}
 }
