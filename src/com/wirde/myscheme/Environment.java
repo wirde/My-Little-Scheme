@@ -39,7 +39,14 @@ public class Environment {
 		return res;
 	}
 
-	public void assoc(Ident ident, Node value) {
+	public void define(Ident ident, Node value) {
+		if (parent == null)
+			builtins.put(ident.getName(), value);
+		else
+			parent.define(ident, value);
+	}
+	
+	public void bind(Ident ident, Node value) {
 		builtins.put(ident.getName(), value);
 	}
 	

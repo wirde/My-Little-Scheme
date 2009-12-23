@@ -54,11 +54,11 @@ public class Cons extends Node {
 			if (definee instanceof Ident) {
 				if (Cons.NIL.equals(getRestAsCons().getRest()))
 					throw new EvalException("Expected expression, got nil");
-				env.assoc((Ident) definee, getThird().eval(env));
+				env.define((Ident) definee, getThird().eval(env));
 			}
 			else if (definee instanceof Cons) {
 				Cons lambdaDef = (Cons) definee;
-				env.assoc((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
+				env.define((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
 			} else
 				throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), this);
             return NIL;
@@ -71,6 +71,9 @@ public class Cons extends Node {
 				return getFourth().eval(env);
 		case QUOTED:
 			return getSecond();
+		case SET:
+//			getSecond().eval(env).setMe(getThird().eval(env));
+			return Cons.NIL;
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}

@@ -36,4 +36,5 @@ public class StrLit extends Literal {
 			return false;
 		return true;
 	}
+	
 }

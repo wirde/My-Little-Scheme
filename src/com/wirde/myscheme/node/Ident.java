@@ -21,5 +21,4 @@ public class Ident extends Node {
 	public String getName() {
 		return name;
 	}
-	
 }

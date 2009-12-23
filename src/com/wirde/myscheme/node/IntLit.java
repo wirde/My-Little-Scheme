@@ -1,5 +1,6 @@
 package com.wirde.myscheme.node;
 
+
 public class IntLit extends Literal {	
 	private final int intVal;
 	
@@ -37,5 +38,5 @@ public class IntLit extends Literal {
 	public int getIntVal() {
 		return intVal;
 	}
-	
+
 }

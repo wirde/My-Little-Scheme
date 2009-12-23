@@ -45,16 +45,17 @@ public class Lambda extends Proc {
 					throw new EvalException("Too many arguments, expected: " + this.params, this);
 				return;
 				}
-			frame.assoc((Ident) paramsCons.getFirst(), args.getFirst());
+			frame.bind((Ident) paramsCons.getFirst(), args.getFirst());
 			bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRest(), frame);
 		} else {
 			if (Cons.NIL.equals(args))
 				throw new EvalException("Expected argument: " + this.params);
-			frame.assoc((Ident) params, args);
+			frame.bind((Ident) params, args);
 		}
 	}
 
 	public String toString() {
 		return "#<procedure>";
 	}
+
 }

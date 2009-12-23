@@ -13,3 +13,17 @@
 	(if (nil? l)
 		initial
 		(f (car l) (reduce f (cdr l) initial)))))
+
+
+;;(let ((x 1) (y 2))
+;;forms
+;;)
+
+;;((lambda (x y)
+;;	forms
+;;) 1 2)
+
+(define let (lambda (bindings . forms)
+	((lambda (x y)
+		(car forms)
+	) 1 2)))

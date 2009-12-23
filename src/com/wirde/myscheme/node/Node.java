@@ -33,7 +33,7 @@ abstract class Literal extends Node {
 }
 
 /*package private*/ enum SpecialForm {
-	REGULAR, DEFINE, IF, QUOTED, LAMBDA;
+	REGULAR, DEFINE, IF, QUOTED, LAMBDA, SET;
 
 	public static SpecialForm toSpecialForm(Cons cons) {
 		Node first = cons.getFirst();
@@ -48,6 +48,8 @@ abstract class Literal extends Node {
 			return QUOTED;
 		if("lambda".equals(name))
 			return LAMBDA;
+		if("set!".equals(name))
+			return SET;
 		return REGULAR;
 	}
 }
