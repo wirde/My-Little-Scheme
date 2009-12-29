@@ -38,13 +38,6 @@ public class Environment {
 		}
 		return res;
 	}
-
-	public void define(Ident ident, Node value) {
-		if (parent == null)
-			bindings.put(ident.getName(), value);
-		else
-			parent.define(ident, value);
-	}
 	
 	public void bind(Ident ident, Node value) {
 		bindings.put(ident.getName(), value);

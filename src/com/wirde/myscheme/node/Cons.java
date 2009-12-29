@@ -54,11 +54,11 @@ public class Cons extends Node {
 			if (definee instanceof Ident) {
 				if (Cons.NIL.equals(getRestAsCons().getRest()))
 					throw new EvalException("Expected expression, got nil");
-				env.define((Ident) definee, getThird().eval(env));
+				env.bind((Ident) definee, getThird().eval(env));
 			}
 			else if (definee instanceof Cons) {
 				Cons lambdaDef = (Cons) definee;
-				env.define((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
+				env.bind((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
 			} else
 				throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), this);
             return NIL;
