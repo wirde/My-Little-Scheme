@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.wirde.myscheme.node.BoolLit;
 import com.wirde.myscheme.node.Cons;
@@ -15,9 +17,13 @@ import com.wirde.myscheme.node.StrLit;
 class Scanner {
 	private final BufferedReader reader;
 	private String currentLine;
-
+	
+	private static final Pattern identPattern = Pattern.compile("^[a-zA-Z0-9+-?\\*?/!]+");
+	private static final Pattern intPattern = Pattern.compile("^[0-9]+");
+	private static final Pattern strPattern = Pattern.compile("^\".*?\""); //TODO: does not handle multiline strings
+	
 	public Scanner(String exp) {
-		reader = new BufferedReader(new StringReader(exp));
+		this(new StringReader(exp));
 	}
 
 	public Scanner(Reader in) {
@@ -32,63 +38,79 @@ class Scanner {
 		currentLine = currentLine.replaceFirst("\\s*", "");
 		char firstChar = currentLine.charAt(0);
 		if (firstChar == '(') {
-			currentLine = currentLine.substring(1, currentLine.length());
+			consumeChars(1);
 			return new Token(TokenType.LPAREN);
 		}
 		if (firstChar == ')') {
-			currentLine = currentLine.substring(1, currentLine.length());
+			consumeChars(1);
 			return new Token(TokenType.RPAREN);
 		}
 		if (firstChar == '#')
 			return readBoolToken();
 		if (firstChar == '\'') {
-			currentLine = currentLine.substring(1, currentLine.length());
+			consumeChars(1);
 			return new Token(TokenType.QUOTE);
 		}
 		if (firstChar == '.') {
-			currentLine = currentLine.substring(1, currentLine.length());
+			consumeChars(1);
 			return new Token(TokenType.DOT);
 		}
-		// TODO: get strings back in
-		// if (strToken.matches("\".*\"$")) return new
-		// StrToken(strToken.substring(1, strToken.length() - 1));
-		// TODO: can fail..
-		try {
+
+		if (intPattern.matcher(currentLine).find()) 
 			return readIntToken();
-		} catch (NumberFormatException e) {
-			// Not an Integer
-		}
-		return readIdentToken();
+		
+		if (strPattern.matcher(currentLine).find()) 
+			return readStrToken();
+		
+		if (identPattern.matcher(currentLine).find())
+			return readIdentToken();
+		
+		//TODO: Fail more gracefully
+		return null;
+	}
+
+	private void consumeChars(int nrChars) {
+		currentLine = currentLine.substring(nrChars, currentLine.length());		
+	}
+
+	//TODO: extract common code
+	
+	private Token readStrToken() {
+		Matcher strMatcher = strPattern.matcher(currentLine);
+		if (strMatcher.find()) {
+			String str = strMatcher.group();
+			consumeChars(str.length());
+			return new StrToken(str.substring(1, str.length() - 1));
+		} else 
+			throw new ParseException("Failed to read identifier. Context: " + currentLine);
 	}
 
 	private Token readIdentToken() {
-		String ident = "";
-		while (currentLine.matches("^[a-zA-Z0-9+-?\\*?/!].*")) {
-			ident += currentLine.charAt(0);
-			currentLine = currentLine.substring(1, currentLine.length());
-		}
-		if (ident.equals(""))
+		Matcher identMatcher = identPattern.matcher(currentLine);
+		if (identMatcher.find()) {
+			String ident = identMatcher.group();
+			consumeChars(ident.length());
+			return new IdentToken(ident);
+		} else 
 			throw new ParseException("Failed to read identifier. Context: " + currentLine);
-		return new IdentToken(ident);
 	}
 
 	private Token readIntToken() {
-		String number = "";
-		while (currentLine.matches("^[0-9].*")) {
-			number += currentLine.charAt(0);
-			currentLine = currentLine.substring(1, currentLine.length());
-		}
-		if (number.equals("") || (!currentLine.matches("^[()\\s].*") && !currentLine.equals("")))
-			throw new NumberFormatException();
-		return new IntToken(Integer.parseInt(number));
+		Matcher intMatcher = intPattern.matcher(currentLine);
+		if (intMatcher.find()) {
+			String number = intMatcher.group();
+			consumeChars(number.length());
+			return new IntToken(Integer.parseInt(number));
+		} else 
+			throw new ParseException("Failed to read int. Context: " + currentLine);
 	}
 
 	private Token readBoolToken() {
 		if (currentLine.startsWith("#t")) {
-			currentLine = currentLine.substring(2, currentLine.length());
+			consumeChars(2);
 			return new Token(TokenType.TRUET);
 		} else if (currentLine.startsWith("#f")) {
-			currentLine = currentLine.substring(2, currentLine.length());
+			consumeChars(2);
 			return new Token(TokenType.FALSET);
 		} else
 			throw new ParseException("Expected #t or #f, in context: " + currentLine);
