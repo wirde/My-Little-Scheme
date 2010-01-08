@@ -20,7 +20,7 @@ class Scanner {
 	
 	private static final Pattern identPattern = Pattern.compile("^[a-zA-Z0-9+-?\\*?/!]+");
 	private static final Pattern intPattern = Pattern.compile("^[0-9]+");
-	private static final Pattern strPattern = Pattern.compile("^\".*?\""); //TODO: does not handle multiline strings
+	private static final Pattern strPattern = Pattern.compile("^\".*?\"", Pattern.DOTALL);
 	
 	public Scanner(String exp) {
 		this(new StringReader(exp));
@@ -65,8 +65,9 @@ class Scanner {
 		if (identPattern.matcher(currentLine).find())
 			return readIdentToken();
 		
-		//TODO: Fail more gracefully
-		return null;
+		//Handle multiline strings, probably breaks for weird input
+		currentLine += "\n" + reader.readLine();
+		return getNextToken();
 	}
 
 	private void consumeChars(int nrChars) {
