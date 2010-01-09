@@ -1,5 +1,7 @@
 package com.wirde.myscheme;
 
+import java.math.BigInteger;
+
 enum TokenType {
 	LPAREN,
 	RPAREN,
@@ -43,16 +45,16 @@ class StrToken extends Token {
 }
 
 class IntToken extends Token {
-	final int intVal;
+	final BigInteger intVal;
 	
-	public IntToken(int intVal) {
+	public IntToken(BigInteger intVal) {
 		super(TokenType.INT);
 		this.intVal = intVal;
 	}
 	
 	@Override
 	public String toString() {
-		return Integer.toString(intVal);
+		return intVal.toString();
 	}	
 }
 

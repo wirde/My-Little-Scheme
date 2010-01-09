@@ -1,23 +1,25 @@
 package com.wirde.myscheme.node;
 
+import java.math.BigInteger;
+
 
 public class IntLit extends Literal {	
-	private final int intVal;
+	private final BigInteger intVal;
 	
-	public IntLit(int intVal) {
+	public IntLit(BigInteger intVal) {
 		this.intVal = intVal;
 	}
 
 	@Override
 	protected String print(int position) {
-		return getIndent(position) + Integer.toString(intVal);
+		return getIndent(position) + intVal;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + intVal;
+		result = prime * result + ((intVal == null) ? 0 : intVal.hashCode());
 		return result;
 	}
 
@@ -27,16 +29,18 @@ public class IntLit extends Literal {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof IntLit))
+		if (getClass() != obj.getClass())
 			return false;
 		IntLit other = (IntLit) obj;
-		if (intVal != other.intVal)
+		if (intVal == null) {
+			if (other.intVal != null)
+				return false;
+		} else if (!intVal.equals(other.intVal))
 			return false;
 		return true;
 	}
 
-	public int getIntVal() {
+	public BigInteger getIntVal() {
 		return intVal;
 	}
-
 }

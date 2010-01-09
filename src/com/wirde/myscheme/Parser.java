@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,7 +102,7 @@ class Scanner {
 		if (intMatcher.find()) {
 			String number = intMatcher.group();
 			consumeChars(number.length());
-			return new IntToken(Integer.parseInt(number));
+			return new IntToken(new BigInteger(number));
 		} else 
 			throw new ParseException("Failed to read int. Context: " + currentLine);
 	}
