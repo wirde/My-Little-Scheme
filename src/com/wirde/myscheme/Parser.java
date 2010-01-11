@@ -20,7 +20,7 @@ class Scanner {
 	private String currentLine;
 	
 	private static final Pattern identPattern = Pattern.compile("^[a-zA-Z0-9+-?\\*?/!]+");
-	private static final Pattern intPattern = Pattern.compile("^[0-9]+");
+	private static final Pattern intPattern = Pattern.compile("^-?[0-9]+");
 	private static final Pattern strPattern = Pattern.compile("^\".*?\"", Pattern.DOTALL);
 	
 	public Scanner(String exp) {

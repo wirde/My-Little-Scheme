@@ -4,11 +4,13 @@
 (define nrFail 0)
 
 (define test (lambda (expected exp)
-	(if (= expected exp)
+	(if (equal? expected exp)
 		#t
 		#f)))
 
 (test 5 (+ 1 2 (+ 1 2) (- 1 2)))
+(test -5 (- 5))
+(test -5 (- 5 10))
 (test 98 (* 7 7 2))
 
 (define (fac n) (if (= n 0) 1 (* n (fac (- n 1)))))
@@ -28,10 +30,10 @@
 
 (test #f (= 1 0))
 (test #t (= 1 1))
-(test #f (= #t #f))
-(test #t (= #t #t))
+(test #f (equal? #t #f))
+(test #t (equal? #t #t))
 
-(test #t (= + +))
+(test #t (equal? + +))
 
 (define x 1)
 
