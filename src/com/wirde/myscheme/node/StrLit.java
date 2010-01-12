@@ -9,7 +9,7 @@ public class StrLit extends Literal {
 
 	@Override
 	protected String print(int position) {
-		return getIndent(position) + "\"" + strVal + "\"";
+		return getIndent(position) + strVal;
 	}
 
 	@Override

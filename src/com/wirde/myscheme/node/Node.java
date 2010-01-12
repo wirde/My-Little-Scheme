@@ -2,8 +2,6 @@ package com.wirde.myscheme.node;
 
 import com.wirde.myscheme.Environment;
 
-//TODO: Immutable objects. What about set! ?
-
 public abstract class Node {	
 
     public abstract Node eval(Environment env);
@@ -33,7 +31,7 @@ abstract class Literal extends Node {
 }
 
 /*package private*/ enum SpecialForm {
-	REGULAR, DEFINE, IF, QUOTED, LAMBDA, SET;
+	REGULAR, DEFINE, IF, QUOTED, LAMBDA, SET, BEGIN;
 
 	public static SpecialForm toSpecialForm(Cons cons) {
 		Node first = cons.getFirst();
@@ -50,6 +48,8 @@ abstract class Literal extends Node {
 			return LAMBDA;
 		if("set!".equals(name))
 			return SET;
+		if("begin".equals(name))
+            return BEGIN;
 		return REGULAR;
 	}
 }

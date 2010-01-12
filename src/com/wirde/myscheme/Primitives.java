@@ -9,6 +9,7 @@ import com.wirde.myscheme.node.Cons;
 import com.wirde.myscheme.node.IntLit;
 import com.wirde.myscheme.node.Node;
 import com.wirde.myscheme.node.PrimitiveProc;
+import com.wirde.myscheme.node.Proc;
 
 public class Primitives {
     
@@ -62,10 +63,31 @@ public class Primitives {
             }
         });
         
+        primitives.put("not", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return ((BoolLit) args.getFirst()) == BoolLit.TRUE ? BoolLit.FALSE : BoolLit.TRUE;
+            }
+        });
+        
         primitives.put("=", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
                 return getInt(args.getFirst()).equals(getInt(args.getSecond())) ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put(">", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return getInt(args.getFirst()).compareTo(getInt(args.getSecond())) == 1 ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put("<", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return getInt(args.getFirst()).compareTo(getInt(args.getSecond())) == -1 ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
@@ -83,6 +105,20 @@ public class Primitives {
             }
         });
         
+        primitives.put("procedure?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof Proc ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put("apply", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return ((Proc) args.getFirst()).apply((Cons) args.getSecond());
+            }
+        });
+        
         primitives.put("print", new PrimitiveProc(1) {
             @Override
             public Node doApply(Cons args) {
@@ -90,7 +126,6 @@ public class Primitives {
                     System.out.print(args.getFirst() + " ");
                     args = args.getRestAsCons();
                 }
-                System.out.println();
                 return Cons.NIL;
             }
         });

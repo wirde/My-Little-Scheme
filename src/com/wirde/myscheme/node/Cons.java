@@ -74,6 +74,14 @@ public class Cons extends Node {
 		case SET:
 			env.set((Ident) getSecond(), getThird());
 			return Cons.NIL;
+		case BEGIN:
+		    Cons exps = getRestAsCons();
+		    Node result = NIL;
+		    while (!exps.equals(NIL)) {
+		        result = exps.getFirst().eval(env);
+		        exps = exps.getRestAsCons();
+		    }
+		    return result;
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -105,14 +113,14 @@ public class Cons extends Node {
 			//TODO: Pretty print
 			return printRegular(position);
 		default:
-			throw new EvalException("Unknown special form: " + special);
+		    return printRegular(position);
 		}
 	}
 
 	private String printQuoted(int position) {
 		String result = "'(";
 		Cons currCons = this;
-		while (currCons != null) {
+		while (!currCons.equals(NIL)) {
 			if (currCons.getFirst() != null) result += currCons.getFirst().toString() + " ";
 			currCons = currCons.getRestAsCons();
 		} 
