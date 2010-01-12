@@ -8,7 +8,7 @@
 (define list (lambda x x))
 
 (define nil? (lambda (x)
-	(if (equal? nil x)
+	(if (eq? nil x)
 		#t
 		#f)))
 

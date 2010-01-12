@@ -65,23 +65,24 @@ public class Primitives {
         primitives.put("=", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
-                if (getInt(args.getFirst()).equals(getInt(args.getSecond())))
-                    return BoolLit.TRUE;
-                else
-                    return BoolLit.FALSE;
+                return getInt(args.getFirst()).equals(getInt(args.getSecond())) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
         primitives.put("equal?", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
-                if (args.getFirst().equals(args.getSecond()))
-                    return BoolLit.TRUE;
-                else
-                    return BoolLit.FALSE;
+                return args.getFirst().equals(args.getSecond()) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
 
+        primitives.put("eq?", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() == args.getSecond() ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
         primitives.put("print", new PrimitiveProc(1) {
             @Override
             public Node doApply(Cons args) {
