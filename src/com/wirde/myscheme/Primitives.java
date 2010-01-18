@@ -8,6 +8,7 @@ import com.wirde.myscheme.node.BoolLit;
 import com.wirde.myscheme.node.Cons;
 import com.wirde.myscheme.node.IntLit;
 import com.wirde.myscheme.node.Node;
+import com.wirde.myscheme.node.PrettyPrintVisitor;
 import com.wirde.myscheme.node.PrimitiveProc;
 import com.wirde.myscheme.node.Proc;
 
@@ -119,13 +120,18 @@ public class Primitives {
             }
         });
         
-        primitives.put("print", new PrimitiveProc(1) {
+        primitives.put("write", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
-                while (!Cons.NIL.equals(args)) {
-                    System.out.print(args.getFirst() + " ");
-                    args = args.getRestAsCons();
-                }
+                args.getFirst().accept(new PrettyPrintVisitor(System.out));
+                return Cons.NIL;
+            }
+        });
+        
+        primitives.put("display", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                System.out.print(args.getFirst());
                 return Cons.NIL;
             }
         });

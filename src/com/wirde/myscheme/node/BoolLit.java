@@ -1,18 +1,19 @@
 package com.wirde.myscheme.node;
 
 public class BoolLit extends Literal {
-	public static final Node TRUE = new BoolLit(true);
-	public static final Node FALSE = new BoolLit(false);
+	public static final Node TRUE = new BoolLit();
+	public static final Node FALSE = new BoolLit();
 	
-	private final boolean boolVal;
-	
-	private BoolLit(boolean boolVal) {
-		this.boolVal = boolVal;
+	private BoolLit() {
 	}
 	
-	public String print(int position) {
-		String result = boolVal ? "#t" : "#f";
-		result = getIndent(position) + result;
-		return result;
-	}
+    @Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override
+    public String toString() {
+        return this == BoolLit.TRUE ? "#t" : "#f";
+    }
 }

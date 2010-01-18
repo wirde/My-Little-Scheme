@@ -14,11 +14,17 @@ public class Ident extends Node {
         return env.lookup(this);
     }
     
-	public String print(int position) {
-		return getIndent(position) + name;
-	}
-
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
+    }
+	
+    @Override
+    public String toString() {
+        return name;
+    }
 }

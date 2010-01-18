@@ -57,5 +57,4 @@ public class Lambda extends Proc {
 	public String toString() {
 		return "#<procedure>";
 	}
-
 }

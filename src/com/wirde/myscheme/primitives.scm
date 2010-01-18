@@ -1,5 +1,4 @@
-(define display print)
-(define write print)
+(define print display)
 (define (newline) (print "
 "))
 

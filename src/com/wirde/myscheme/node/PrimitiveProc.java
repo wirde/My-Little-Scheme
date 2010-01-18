@@ -28,4 +28,9 @@ public abstract class PrimitiveProc extends Proc {
     }
 
     public abstract Node doApply(Cons args);
+    
+    @Override
+    public String toString() {
+        return "#<native-procedure>";
+    }
 }

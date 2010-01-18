@@ -96,74 +96,10 @@ public class Cons extends Node {
 		
 		return new Cons(cons.getFirst().eval(env), evaluateList(cons.getRestAsCons(), env));
 	}
-    
-	@Override
-	protected String print(int position) {
-		SpecialForm special = SpecialForm.toSpecialForm(this);
-		switch (special) {
-		case REGULAR:
-			return printRegular(position);
-		case DEFINE:
-			return printDefine(position);
-		case IF:
-			return printIf(position);
-		case QUOTED:
-			return printQuoted(position);
-		case LAMBDA:
-			//TODO: Pretty print
-			return printRegular(position);
-		default:
-		    return printRegular(position);
-		}
-	}
-
-	private String printQuoted(int position) {
-		String result = "'(";
-		Cons currCons = this;
-		while (!currCons.equals(NIL)) {
-			if (currCons.getFirst() != null) result += currCons.getFirst().toString() + " ";
-			currCons = currCons.getRestAsCons();
-		} 
-		result = result.trim();
-		return getIndent(position) + result + ")";
-	}
-
-	private String printIf(int position) {
-		String result = getIndent(position) + "(" + getFirst() + "\n";
-		Cons currCons =  getRestAsCons();
-		while (currCons != null) {
-			if (currCons.getFirst() != null) 
-				result += currCons.getFirst().print(position + 2) + "\n";
-			currCons = currCons.getRestAsCons();
-		}
-		return result + getIndent(position) + ")";
-	}
-
-	private String printDefine(int position) {
-		String result = getIndent(position) + "(" + getFirst() + " ";
-		result += getSecond() + "\n";
-		Cons currCons = getRestAsCons().getRestAsCons();
-		while (currCons != Cons.NIL) {
-			if (currCons.getFirst() != Cons.NIL) 
-				result += currCons.getFirst().print(position + 2) + "\n";
-			currCons = currCons.getRestAsCons();
-		}
-		return result + getIndent(position) + ")";
-	}
 	
-	private String printRegular(int position) {
-		String result = "(";
-		Cons currCons = this;
-		while (!Cons.NIL.equals(currCons)) {
-			result += currCons.getFirst().toString() + " ";
-			if (!(currCons.rest instanceof Cons)) {
-				result += ". " + currCons.rest;
-				break;
-			}
-			currCons = currCons.getRestAsCons();
-		} 
-		result = result.trim();
-		return this.getIndent(position) + result + ")";
+	@Override
+	public void accept(NodeVisitor visitor) {
+	    visitor.visit(this);
 	}
 	
 	public int length() {
@@ -176,6 +112,7 @@ public class Cons extends Node {
 		return retVal;
 	}
 
+	//FIXME!
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -206,4 +143,23 @@ public class Cons extends Node {
 			return false;
 		return true;
 	}
+	
+	@Override
+    public String toString() {
+        String result = ("(");
+        Cons currCons = this;
+        while (!Cons.NIL.equals(currCons)) {
+            result += currCons.getFirst();
+            if (!(currCons.getRest() instanceof Cons)) {
+                result += ". ";
+                result += currCons.getRest();
+                break;
+            }
+            currCons = currCons.getRestAsCons();
+            if (!currCons.equals(Cons.NIL))
+                result += " ";
+        }
+        result += ")";
+        return result;
+    }
 }

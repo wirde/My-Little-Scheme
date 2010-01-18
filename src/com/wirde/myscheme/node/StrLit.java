@@ -3,13 +3,12 @@ package com.wirde.myscheme.node;
 public class StrLit extends Literal {	
 	private final String strVal;
 	
-	public StrLit(String strVal) {
-		this.strVal = strVal;
-	}
+	public String getStrVal() {
+        return strVal;
+    }
 
-	@Override
-	protected String print(int position) {
-		return getIndent(position) + strVal;
+    public StrLit(String strVal) {
+		this.strVal = strVal;
 	}
 
 	@Override
@@ -36,5 +35,14 @@ public class StrLit extends Literal {
 			return false;
 		return true;
 	}
-	
+
+    @Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override
+    public String toString() {
+        return strVal;
+    }
 }

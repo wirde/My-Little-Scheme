@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.wirde.myscheme.node.Node;
+import com.wirde.myscheme.node.PrettyPrintVisitor;
 
 public class Main {
 	
@@ -22,7 +23,8 @@ public class Main {
 				Node exp = parser.parseNext();
 				if (exp == null)
 					break;
-				System.out.println(exp.eval(env));
+				exp.eval(env).accept(new PrettyPrintVisitor(System.out));
+				System.out.println();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (RuntimeException e) {

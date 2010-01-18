@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.wirde.myscheme.node.Ident;
 import com.wirde.myscheme.node.Node;
+import com.wirde.myscheme.node.PrettyPrintVisitor;
 
 public class Environment {
 
@@ -52,21 +53,26 @@ public class Environment {
     public void evalFile(String file, PrintStream out) throws IOException {
         Reader reader = new FileReader(file);
         Parser parser = new Parser(reader);
-        while (true) {
-            Node exp = parser.parseNext();
-            if (exp == null)
-                break;
+        try {
+            while (true) {
+                Node exp = parser.parseNext();
+                if (exp == null)
+                    break;
 
-            Node res = exp.eval(this);
-            if (out != null)
-                out.println(res);
+                Node res = exp.eval(this);
+                if (out != null) {
+                    res.accept(new PrettyPrintVisitor(out));
+                    out.println();
+                }
+            }
+            if (reader.read() != -1)
+                throw new ParseException("Error reading file: " + file);
+        } finally {
+            reader.close();
         }
-        if (reader.read() != -1)
-            throw new ParseException("Error reading file: " + file);
     }
 
     public void setParent(Environment env) {
         parent = env;
     }
-
 }

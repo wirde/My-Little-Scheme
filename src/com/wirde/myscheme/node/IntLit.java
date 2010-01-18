@@ -11,11 +11,6 @@ public class IntLit extends Literal {
 	}
 
 	@Override
-	protected String print(int position) {
-		return getIndent(position) + intVal;
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -43,4 +38,14 @@ public class IntLit extends Literal {
 	public BigInteger getIntVal() {
 		return intVal;
 	}
+
+    @Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override
+    public String toString() {
+        return intVal.toString();
+    }
 }
