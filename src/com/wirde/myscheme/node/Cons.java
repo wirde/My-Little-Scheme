@@ -82,6 +82,18 @@ public class Cons extends Node {
 		        exps = exps.getRestAsCons();
 		    }
 		    return result;
+		case LET:
+		    Cons params = Cons.NIL;
+		    Cons args = Cons.NIL;
+		    Cons paramList = (Cons) getSecond();
+		    Cons body = getRestAsCons().getRestAsCons();
+		    while (!paramList.equals(Cons.NIL)) {
+		        Cons paramArgPair = (Cons) paramList.getFirst();
+		        params = new Cons(paramArgPair.getFirst(), params);
+		        args = new Cons(paramArgPair.getSecond(), args);
+		        paramList = paramList.getRestAsCons();
+		    }
+		    return new Lambda(params, body, env).apply(args);
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
