@@ -94,6 +94,17 @@ public class Cons extends Node {
 		        paramList = paramList.getRestAsCons();
 		    }
 		    return new Lambda(params, body, env).apply(args);
+		case COND:
+		    Cons condClauses = getRestAsCons();
+		    while (!condClauses.equals(Cons.NIL)) {
+		        if ((condClauses.getRest().equals(Cons.NIL) && ((Cons) condClauses.getFirst()).getFirst().equals(new Ident("else")))
+		            ||
+		            ((Cons) condClauses.getFirst()).getFirst().eval(env).equals(BoolLit.TRUE)) {
+		            return ((Cons) condClauses.getFirst()).getSecond().eval(env);
+		        }
+		        condClauses = condClauses.getRestAsCons();
+		    }
+            return Cons.NIL;
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
