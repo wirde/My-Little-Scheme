@@ -97,9 +97,10 @@ public class Cons extends Node {
 		case COND:
 		    Cons condClauses = getRestAsCons();
 		    while (!condClauses.equals(Cons.NIL)) {
-		        if ((condClauses.getRest().equals(Cons.NIL) && ((Cons) condClauses.getFirst()).getFirst().equals(new Ident("else")))
+		        Node predicate = ((Cons) condClauses.getFirst()).getFirst();
+                if ((condClauses.getRest().equals(Cons.NIL) && predicate.equals(new Ident("else")))
 		            ||
-		            ((Cons) condClauses.getFirst()).getFirst().eval(env).equals(BoolLit.TRUE)) {
+		            BoolLit.isTrue(predicate.eval(env))) {
 		            return ((Cons) condClauses.getFirst()).getSecond().eval(env);
 		        }
 		        condClauses = condClauses.getRestAsCons();

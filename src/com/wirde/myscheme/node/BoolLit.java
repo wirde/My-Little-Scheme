@@ -16,4 +16,8 @@ public class BoolLit extends Literal {
     public String toString() {
         return this == BoolLit.TRUE ? "#t" : "#f";
     }
+
+    public static boolean isTrue(Node node) {
+        return node.equals(BoolLit.TRUE) ? true : false;
+    }
 }
