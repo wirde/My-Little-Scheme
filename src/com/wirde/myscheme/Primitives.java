@@ -30,9 +30,8 @@ public class Primitives {
             @Override
             public Node doApply(Cons args) {
                 BigInteger result = getInt(args.getFirst());
-                while (!args.getRest().equals(Cons.NIL)) {
-                    args = args.getRestAsCons();
-                    result = result.add(getInt(args.getFirst()));
+                for (Cons currentCons : args.getRestAsCons()) {
+                    result = result.add(getInt(currentCons.getFirst()));
                 }
                 return new IntLit(result);
             }
@@ -44,9 +43,8 @@ public class Primitives {
                 BigInteger result = getInt(args.getFirst());
                 if (args.getRest().equals(Cons.NIL))
                     result = result.negate();
-                else while (!args.getRest().equals(Cons.NIL)) {
-                    args = args.getRestAsCons();
-                    result = result.subtract(getInt(args.getFirst()));
+                else for (Cons currentCons : args.getRestAsCons()) {
+                    result = result.subtract(getInt(currentCons.getFirst()));
                 }
                 return new IntLit(result);
             }
@@ -56,9 +54,8 @@ public class Primitives {
             @Override
             public Node doApply(Cons args) {
                 BigInteger result = getInt(args.getFirst());
-                while (!args.getRest().equals(Cons.NIL)) {
-                    args = args.getRestAsCons();
-                    result = result.multiply(getInt(args.getFirst()));
+                for (Cons currentCons : args.getRestAsCons()) {
+                    result = result.multiply(getInt(currentCons.getFirst()));
                 }
                 return new IntLit(result);
             }

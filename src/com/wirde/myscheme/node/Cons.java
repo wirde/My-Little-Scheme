@@ -1,9 +1,11 @@
 package com.wirde.myscheme.node;
 
+import java.util.Iterator;
+
 import com.wirde.myscheme.Environment;
 import com.wirde.myscheme.EvalException;
 
-public class Cons extends Node {
+public class Cons extends Node implements Iterable<Cons> {
     public static final Cons NIL = new Cons();
     private final Node first;
     private final Node rest;
@@ -48,11 +50,11 @@ public class Cons extends Node {
             Proc proc = (Proc) first.eval(env);        
             return proc.apply(evaluateList(getRestAsCons(), env));
 		case DEFINE:
-			if (Cons.NIL.equals(getRest()))
+			if (Cons.NIL == getRest())
 				throw new EvalException("Expected identifier, got nil");
 			Node definee = getSecond();
 			if (definee instanceof Ident) {
-				if (Cons.NIL.equals(getRestAsCons().getRest()))
+				if (Cons.NIL == getRestAsCons().getRest())
 					throw new EvalException("Expected expression, got nil");
 				env.bind((Ident) definee, getThird().eval(env));
 			}
@@ -115,8 +117,8 @@ public class Cons extends Node {
 		if (cons == null)
 			return null;
 		
-		if (Cons.NIL.equals(cons))
-			return (Cons) Cons.NIL;
+		if (Cons.NIL == cons)
+			return Cons.NIL;
 		
 		return new Cons(cons.getFirst().eval(env), evaluateList(cons.getRestAsCons(), env));
 	}
@@ -171,19 +173,48 @@ public class Cons extends Node {
 	@Override
     public String toString() {
         String result = ("(");
-        Cons currCons = this;
-        while (!Cons.NIL.equals(currCons)) {
+        for (Cons currCons : this) {
             result += currCons.getFirst();
             if (!(currCons.getRest() instanceof Cons)) {
                 result += ". ";
                 result += currCons.getRest();
                 break;
             }
-            currCons = currCons.getRestAsCons();
-            if (!currCons.equals(Cons.NIL))
+            if (currCons.getRestAsCons() != Cons.NIL)
                 result += " ";
         }
         result += ")";
         return result;
+    }
+
+    @Override
+    public Iterator<Cons> iterator() {
+        return new ConsIterator(this);
+    }
+    
+    private static class ConsIterator implements Iterator<Cons> {
+
+        private Cons currentCons;
+
+        public ConsIterator(Cons cons) {
+            currentCons = cons;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentCons != NIL;
+        }
+
+        @Override
+        public Cons next() {
+            Cons res = currentCons;
+            currentCons = currentCons.getRestAsCons();
+            return res;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

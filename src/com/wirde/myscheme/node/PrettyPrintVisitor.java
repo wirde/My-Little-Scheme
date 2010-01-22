@@ -61,11 +61,9 @@ public class PrettyPrintVisitor implements NodeVisitor {
 
     private void printQuoted(Cons cons) {
         print("'(");
-        Cons currCons = cons;
-        while (!currCons.equals(Cons.NIL)) {
+        for (Cons currCons : cons) {
             currCons.getFirst().accept(this);
-            currCons = currCons.getRestAsCons();
-            if (!currCons.equals(Cons.NIL))
+            if (!currCons.getRestAsCons().equals(Cons.NIL))
                 print(" ");
         }
         print(")");
@@ -75,13 +73,11 @@ public class PrettyPrintVisitor implements NodeVisitor {
         print("(");
         cons.getFirst().accept(this);
         print("\n");
-        Cons currCons = cons.getRestAsCons();
         position += 2;
-        while (!currCons.equals(Cons.NIL)) {
+        for (Cons currCons : cons.getRestAsCons()) {
             indent();
             currCons.getFirst().accept(this);
-            currCons = currCons.getRestAsCons();
-            if (!currCons.equals(Cons.NIL))
+            if (currCons.getRestAsCons() != Cons.NIL)
                 print("\n");
         }
         position -=2;
@@ -94,13 +90,11 @@ public class PrettyPrintVisitor implements NodeVisitor {
         print(" ");
         cons.getSecond().accept(this);
         print("\n");
-        Cons currCons = cons.getRestAsCons().getRestAsCons();
         position += 2;
-        while (!currCons.equals(Cons.NIL)) {
+        for (Cons currCons : cons.getRestAsCons().getRestAsCons()) {
             indent();
             currCons.getFirst().accept(this);
-            currCons = currCons.getRestAsCons();
-            if (!currCons.equals(Cons.NIL))
+            if (!currCons.getRestAsCons().equals(Cons.NIL))
                 print("\n");
         }
         position -= 2;

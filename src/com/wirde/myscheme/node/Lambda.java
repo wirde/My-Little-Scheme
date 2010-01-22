@@ -23,11 +23,9 @@ public class Lambda extends Proc {
 		bindArgumentsToFrame(args, params, frame);
 		
 		//Evaluate the expressions in the body
-		Cons next = body;
 		Node result = null;
-		while (!Cons.NIL.equals(next)) {
-			result = next.getFirst().eval(frame);
-			next = next.getRestAsCons();
+		for (Cons currCons : body) {
+			result = currCons.getFirst().eval(frame);
 		}
 		return result;
 	}
