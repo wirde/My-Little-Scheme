@@ -108,6 +108,18 @@ public class Cons extends Node implements Iterable<Cons> {
 		        condClauses = condClauses.getRestAsCons();
 		    }
             return Cons.NIL;
+		case AND:
+		    for (Cons currentCons : getRestAsCons()) {
+		        if (currentCons.getFirst().eval(env) != BoolLit.TRUE)
+		            return BoolLit.FALSE;
+		    }
+		    return BoolLit.TRUE;
+		case OR:
+		    for (Cons currentCons : getRestAsCons()) {
+                if (currentCons.getFirst().eval(env) == BoolLit.TRUE)
+                    return BoolLit.TRUE;
+            }
+            return BoolLit.FALSE;
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
