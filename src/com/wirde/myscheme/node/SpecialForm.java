@@ -22,6 +22,12 @@ public enum SpecialForm {
             return BEGIN;
         if("let".equals(name))
             return LET;
+        //TODO: for now...
+        if("let*".equals(name))
+            return LET;
+        //TODO: for now...
+        if("letrec".equals(name))
+            return LET;
         if("cond".equals(name))
             return COND;
         if("and".equals(name))
