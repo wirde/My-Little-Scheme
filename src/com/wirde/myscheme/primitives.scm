@@ -51,3 +51,19 @@
 
 (define (assoc obj l)
 	(ass obj l equal?))
+	
+(define (mem obj l pred)
+	(if (nil? l)
+		#f
+		(if (pred obj (car l))
+			l
+			(mem obj (cdr l) pred))))
+
+(define (memq obj l)
+	(mem obj l eq?))
+	
+(define (memv obj l)
+	(mem obj l eqv?))
+	
+(define (member obj l)
+	(mem obj l equal?))
