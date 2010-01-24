@@ -2,6 +2,7 @@
 (define (newline) (print "
 "))
 
+(define caar (lambda (l) (car (car l))))
 (define cadr (lambda (l) (car (cdr l))))
 
 (define list (lambda x x))
@@ -35,15 +36,18 @@
 			(cons (car l) (filter f (cdr l)))
 			(filter f (cdr l))))) 
 
-;;(let ((x 1) (y 2))
-;;forms
-;;)
+(define (ass obj l pred)
+	(if (nil? l)
+		#f
+		(if (pred obj (caar l))
+			(car l)
+			(ass obj (cdr l) pred))))
+			
+(define (assq obj l)
+	(ass obj l eq?))
+	
+(define (assv obj l)
+	(ass obj l eqv?))	
 
-;;((lambda (x y)
-;;	forms
-;;) 1 2)
-
-;;(define let (lambda (bindings . forms)
-;;	((lambda (x y)
-;;		(car forms)
-;;	) 1 2)))
+(define (assoc obj l)
+	(ass obj l equal?))

@@ -103,6 +103,14 @@ public class Primitives {
             }
         });
         
+        //TODO: Not correct, but will have to do for now
+        primitives.put("eqv?", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() == args.getSecond() ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
         primitives.put("procedure?", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
