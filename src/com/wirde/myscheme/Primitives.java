@@ -64,14 +64,19 @@ public class Primitives {
         primitives.put("not", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
-                return ((BoolLit) args.getFirst()) == BoolLit.TRUE ? BoolLit.FALSE : BoolLit.TRUE;
+                return args.getFirst() == BoolLit.FALSE ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
-        primitives.put("=", new PrimitiveProc(2, 2) {
+        primitives.put("=", new PrimitiveProc(2) {
             @Override
             public Node doApply(Cons args) {
-                return getInt(args.getFirst()).equals(getInt(args.getSecond())) ? BoolLit.TRUE : BoolLit.FALSE;
+                BigInteger first = getInt(args.getFirst());
+                for (Cons currentCons : args.getRestAsCons()) {
+                    if (!getInt(currentCons.getFirst()).equals(first))
+                        return BoolLit.FALSE;
+                }
+                return BoolLit.TRUE;
             }
         });
         
@@ -162,6 +167,12 @@ public class Primitives {
             }
         });
 
+        primitives.put("length", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return new IntLit(((Cons) args.getFirst()).length());
+            }
+        });        
         // Variables
         primitives.put("nil", Cons.NIL);
 

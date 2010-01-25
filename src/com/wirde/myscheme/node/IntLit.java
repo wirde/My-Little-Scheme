@@ -10,7 +10,11 @@ public class IntLit extends Literal {
 		this.intVal = intVal;
 	}
 
-	@Override
+	public IntLit(int intVal) {
+	    this(BigInteger.valueOf(intVal));
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

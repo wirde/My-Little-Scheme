@@ -46,7 +46,7 @@ public class Lambda extends Proc {
 			frame.bind((Ident) paramsCons.getFirst(), args.getFirst());
 			bindArgumentsToFrame(args.getRestAsCons(), paramsCons.getRest(), frame);
 		} else {
-			if (Cons.NIL.equals(args))
+			if (Cons.NIL == args)
 				throw new EvalException("Expected argument: " + this.params);
 			frame.bind((Ident) params, args);
 		}

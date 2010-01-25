@@ -103,7 +103,11 @@ public class Cons extends Node implements Iterable<Cons> {
                 if ((condClauses.getRest().equals(Cons.NIL) && predicate.equals(new Ident("else")))
 		            ||
 		            BoolLit.isTrue(predicate.eval(env))) {
-		            return ((Cons) condClauses.getFirst()).getSecond().eval(env);
+                    Node res = Cons.NIL;
+                    for (Cons currentCons : ((Cons) condClauses.getFirst()).getRestAsCons()) {
+                        res = currentCons.getFirst().eval(env);
+                    }
+		            return res;
 		        }
 		        condClauses = condClauses.getRestAsCons();
 		    }
@@ -120,6 +124,15 @@ public class Cons extends Node implements Iterable<Cons> {
                     return BoolLit.TRUE;
             }
             return BoolLit.FALSE;
+		case DO:
+		    //TODO: Implement
+		    return Cons.NIL;
+		case SET_CAR:
+		    //TODO: Implement
+            return Cons.NIL;
+		case SET_CDR:
+		    //TODO: Implement
+		    return Cons.NIL;
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -185,15 +198,17 @@ public class Cons extends Node implements Iterable<Cons> {
 	@Override
     public String toString() {
         String result = ("(");
-        for (Cons currCons : this) {
+        Cons currCons = this;
+        while (currCons != NIL) {
             result += currCons.getFirst();
             if (!(currCons.getRest() instanceof Cons)) {
-                result += ". ";
+                result += " . ";
                 result += currCons.getRest();
                 break;
             }
             if (currCons.getRestAsCons() != Cons.NIL)
                 result += " ";
+            currCons = currCons.getRestAsCons();
         }
         result += ")";
         return result;
