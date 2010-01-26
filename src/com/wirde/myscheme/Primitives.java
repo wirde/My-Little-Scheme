@@ -11,6 +11,7 @@ import com.wirde.myscheme.node.Node;
 import com.wirde.myscheme.node.PrettyPrintVisitor;
 import com.wirde.myscheme.node.PrimitiveProc;
 import com.wirde.myscheme.node.Proc;
+import com.wirde.myscheme.node.StrLit;
 
 public class Primitives {
     
@@ -145,6 +146,17 @@ public class Primitives {
             }
         });
 
+        primitives.put("make-string", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                String result = "";
+                for (Cons currentCons : args) {
+                    result += currentCons.getFirst();
+                }
+                return new StrLit(result);
+            }
+        });
+        
         primitives.put("cons", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {

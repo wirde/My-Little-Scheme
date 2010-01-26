@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.wirde.myscheme.node.BoolLit;
+import com.wirde.myscheme.node.CharLit;
 import com.wirde.myscheme.node.Cons;
 import com.wirde.myscheme.node.Ident;
 import com.wirde.myscheme.node.IntLit;
@@ -46,6 +47,8 @@ class Scanner {
 			consumeChars(1);
 			return new Token(TokenType.RPAREN);
 		}
+		if (currentLine.startsWith("#\\"))
+		    return readCharConstant();
 		if (firstChar == '#')
 			return readBoolToken();
 		if (firstChar == '\'') {
@@ -71,12 +74,18 @@ class Scanner {
 		return getNextToken();
 	}
 
-	private void consumeChars(int nrChars) {
+    private void consumeChars(int nrChars) {
 		currentLine = currentLine.substring(nrChars, currentLine.length());		
 	}
 
 	//TODO: extract common code
-	
+
+    private Token readCharConstant() {
+        Token token = new CharToken(currentLine.charAt(2));
+        consumeChars(3);
+        return token;
+    }
+
 	private Token readStrToken() {
 		Matcher strMatcher = strPattern.matcher(currentLine);
 		if (strMatcher.find()) {
@@ -181,6 +190,8 @@ public class Parser {
 			return new IntLit(((IntToken) token).intVal);
 		case IDENT:
 			return new Ident(((IdentToken) token).name.toLowerCase());
+		case CHAR:
+		    return new CharLit(((CharToken) token).charact);
 		case TRUET:
 			return BoolLit.TRUE;
 		case FALSET:

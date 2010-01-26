@@ -40,7 +40,7 @@ public class Lambda extends Proc {
 			}
 			if (Cons.NIL == params) {
 				if (Cons.NIL != args)
-					throw new EvalException("Too many arguments, expected: " + this.params, this);
+					throw new EvalException("Too many arguments, expected: " + this.params + " remaining: " + args, this);
 				return;
 				}
 			frame.bind((Ident) paramsCons.getFirst(), args.getFirst());
