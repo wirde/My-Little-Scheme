@@ -112,7 +112,7 @@ public class Primitives {
         primitives.put("eqv?", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
-                return args.getFirst() == args.getSecond() ? BoolLit.TRUE : BoolLit.FALSE;
+                return args.getFirst().equals(args.getSecond()) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         

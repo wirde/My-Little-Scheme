@@ -104,7 +104,11 @@ public class Cons extends Node implements Iterable<Cons> {
 		            ||
 		            BoolLit.isTrue(predicate.eval(env))) {
                     Node res = Cons.NIL;
-                    for (Cons currentCons : ((Cons) condClauses.getFirst()).getRestAsCons()) {
+                    Cons expressions = ((Cons) condClauses.getFirst()).getRestAsCons();
+                    //TODO: predicate is evaluated twice...
+                    if (expressions.getFirst().equals(new Ident("=>")))
+                        return ((Proc) expressions.getSecond().eval(env)).apply(new Cons(predicate.eval(env), Cons.NIL));
+                    for (Cons currentCons : expressions) {
                         res = currentCons.getFirst().eval(env);
                     }
 		            return res;
