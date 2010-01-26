@@ -117,15 +117,19 @@ public class Cons extends Node implements Iterable<Cons> {
 		    }
             return Cons.NIL;
 		case AND:
+		    Node res = BoolLit.TRUE;
 		    for (Cons currentCons : getRestAsCons()) {
-		        if (currentCons.getFirst().eval(env) != BoolLit.TRUE)
+		        res = currentCons.getFirst().eval(env);
+		        if (!BoolLit.isTrue(res))
 		            return BoolLit.FALSE;
 		    }
-		    return BoolLit.TRUE;
+		    return res;
 		case OR:
+		    res = BoolLit.FALSE;
 		    for (Cons currentCons : getRestAsCons()) {
-                if (currentCons.getFirst().eval(env) == BoolLit.TRUE)
-                    return BoolLit.TRUE;
+		        res = currentCons.getFirst().eval(env); 
+                if (BoolLit.isTrue(res))
+                    return res;
             }
             return BoolLit.FALSE;
 		case DO:
@@ -137,6 +141,9 @@ public class Cons extends Node implements Iterable<Cons> {
 		case SET_CDR:
 		    //TODO: Implement
 		    return Cons.NIL;
+		case CASE:
+            //TODO: Implement
+            return Cons.NIL;		    
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
