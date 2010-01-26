@@ -83,6 +83,8 @@
 	#f)
 (define (number? obj)
 	#f)
+(define (boolean? obj)
+	#f)
 (define (symbol? obj)
 	#f)
 (define (list? obj)

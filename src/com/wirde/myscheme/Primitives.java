@@ -20,8 +20,7 @@ public class Primitives {
         throw new EvalException("Expected int, got: " + node);
     }
 
-    public static Map<String, 
-    Node> getPrimitives() {
+    public static Map<String, Node> getPrimitives() {
         Map<String, Node> primitives = new HashMap<String, Node>();
 
         // Primitive functions
@@ -172,7 +171,14 @@ public class Primitives {
             public Node doApply(Cons args) {
                 return new IntLit(((Cons) args.getFirst()).length());
             }
-        });        
+        });
+        primitives.put("quit", new PrimitiveProc(0, 0) {
+            @Override
+            public Node doApply(Cons args) {
+                System.exit(0);
+                return Cons.NIL;
+            }
+        });
         // Variables
         primitives.put("nil", Cons.NIL);
 
