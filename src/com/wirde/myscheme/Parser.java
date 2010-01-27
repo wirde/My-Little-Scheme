@@ -128,7 +128,7 @@ class Scanner {
 	}
 
 	private boolean blank(String line) {
-		return line == null || line.matches("^\\s*;;.*") || line.matches("^\\s*$");
+		return line == null || line.matches("^\\s*;.*") || line.matches("^\\s*$");
 	}
 
 	private void getNextLine() throws IOException {
