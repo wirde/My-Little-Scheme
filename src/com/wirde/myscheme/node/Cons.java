@@ -179,6 +179,8 @@ public class Cons extends Node implements Iterable<Cons> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		if (this == Cons.NIL)
+		    return result;
 		result = prime * result + ((first == null) ? 0 : first.hashCode());
 		result = prime * result + ((rest == null) ? 0 : rest.hashCode());
 		return result;
