@@ -61,13 +61,15 @@ class Scanner {
 		}
 
 		if (intPattern.matcher(currentLine).find()) 
-			return readIntToken();
+			return new IntToken(new BigInteger(readToken(intPattern)));
 		
-		if (strPattern.matcher(currentLine).find()) 
-			return readStrToken();
+		if (strPattern.matcher(currentLine).find()) {
+		    String str = readToken(strPattern);
+			return new StrToken(str.substring(1, str.length() - 1));
+		}
 		
 		if (identPattern.matcher(currentLine).find())
-			return readIdentToken();
+			return new IdentToken(readToken(identPattern));
 		
 		//Handle multiline strings, probably breaks for weird input
 		currentLine += "\n" + reader.readLine();
@@ -78,43 +80,21 @@ class Scanner {
 		currentLine = currentLine.substring(nrChars, currentLine.length());		
 	}
 
-	//TODO: extract common code
-
     private Token readCharConstant() {
         Token token = new CharToken(currentLine.charAt(2));
         consumeChars(3);
         return token;
     }
 
-	private Token readStrToken() {
-		Matcher strMatcher = strPattern.matcher(currentLine);
-		if (strMatcher.find()) {
-			String str = strMatcher.group();
-			consumeChars(str.length());
-			return new StrToken(str.substring(1, str.length() - 1));
-		} else 
-			throw new ParseException("Failed to read identifier. Context: " + currentLine);
-	}
-
-	private Token readIdentToken() {
-		Matcher identMatcher = identPattern.matcher(currentLine);
-		if (identMatcher.find()) {
-			String ident = identMatcher.group();
-			consumeChars(ident.length());
-			return new IdentToken(ident);
-		} else 
-			throw new ParseException("Failed to read identifier. Context: " + currentLine);
-	}
-
-	private Token readIntToken() {
-		Matcher intMatcher = intPattern.matcher(currentLine);
-		if (intMatcher.find()) {
-			String number = intMatcher.group();
-			consumeChars(number.length());
-			return new IntToken(new BigInteger(number));
-		} else 
-			throw new ParseException("Failed to read int. Context: " + currentLine);
-	}
+    private String readToken(Pattern pattern) {
+        Matcher matcher = pattern.matcher(currentLine);
+        if (matcher.find()) {
+            String str = matcher.group();
+            consumeChars(str.length());
+            return str;
+        } else 
+            throw new ParseException("Failed to read token. Context: " + currentLine);        
+    }
 
 	private Token readBoolToken() {
 		if (currentLine.startsWith("#t")) {
