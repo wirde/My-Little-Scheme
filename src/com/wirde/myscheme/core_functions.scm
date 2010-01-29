@@ -99,6 +99,16 @@
 		#t
 		#f))
 
+(define (odd? x)
+	(if (zero? (remainder x 2))
+		#f
+		#t))
+
+(define (even? x)
+	(if (zero? (remainder x 2))
+		#t
+		#f))
+
 ;;Dummy functions
 (define (append l1 l2)
 	#f)

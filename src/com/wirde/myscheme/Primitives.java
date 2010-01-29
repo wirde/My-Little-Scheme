@@ -60,6 +60,13 @@ public class Primitives {
                 return new IntLit(result);
             }
         });
+
+        primitives.put("remainder", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return new IntLit(getInt(args.getFirst()).remainder(getInt(args.getSecond())));
+            }
+        });
         
         //Predicates
         
@@ -83,11 +90,8 @@ public class Primitives {
         });
         
         primitives.put(">", new NumCompProc(1));
-
         primitives.put("<", new NumCompProc(-1));
-        
         primitives.put(">=", new NumCompProc(1, 0));
-        
         primitives.put("<=", new NumCompProc(-1, 0));
         
         primitives.put("equal?", new PrimitiveProc(2, 2) {
@@ -224,7 +228,7 @@ public class Primitives {
         private final Class<?> clazz;
 
         public TypeCompProc(Class<?> clazz) {
-            super(2, 2);
+            super(1, 1);
             this.clazz = clazz;
         }
 
