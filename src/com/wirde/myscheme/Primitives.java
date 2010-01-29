@@ -132,6 +132,34 @@ public class Primitives {
             }
         });
         
+        primitives.put("number?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+
+        primitives.put("integer?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put("exact?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put("inexact?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof IntLit ? BoolLit.FALSE : BoolLit.TRUE;
+            }
+        });
+        
         primitives.put("pair?", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
