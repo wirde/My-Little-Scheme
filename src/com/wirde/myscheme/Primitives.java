@@ -82,24 +82,13 @@ public class Primitives {
             }
         });
         
-        primitives.put(">", new PrimitiveProc(2) {
-            @Override
-            public Node doApply(Cons args) {
-                BigInteger first = getInt(args.getFirst());
-                for (Cons currentCons : args.getRestAsCons()) {
-                    if (first.compareTo(getInt(currentCons.getFirst())) != 1)
-                        return BoolLit.FALSE;
-                }
-                return BoolLit.TRUE; 
-            }
-        });
+        primitives.put(">", new NumCompProc(1));
+
+        primitives.put("<", new NumCompProc(-1));
         
-        primitives.put("<", new PrimitiveProc(2, 2) {
-            @Override
-            public Node doApply(Cons args) {
-                return getInt(args.getFirst()).compareTo(getInt(args.getSecond())) == -1 ? BoolLit.TRUE : BoolLit.FALSE;
-            }
-        });
+        primitives.put(">=", new NumCompProc(1, 0));
+        
+        primitives.put("<=", new NumCompProc(-1, 0));
         
         primitives.put("equal?", new PrimitiveProc(2, 2) {
             @Override
@@ -251,5 +240,35 @@ public class Primitives {
         primitives.put("nil", Cons.NIL);
 
         return primitives;
+    }
+ 
+    //TODO: Improve impl
+    private static class NumCompProc extends PrimitiveProc {
+        
+        private final int compArg1;
+        private final int compArg2;
+
+        public NumCompProc(int compArg1) {
+            this(compArg1, compArg1);
+        }
+        
+        public NumCompProc(int compArg1, int compArg2) {
+            super(2);
+            this.compArg1 = compArg1;
+            this.compArg2 = compArg2;
+        }
+
+        @Override
+        public Node doApply(Cons args) {
+            BigInteger first = getInt(args.getFirst());
+            for (Cons currentCons : args.getRestAsCons()) {
+                BigInteger second = getInt(currentCons.getFirst());
+                int res = first.compareTo(second);
+                if (res != compArg1 && res != compArg2)
+                    return BoolLit.FALSE;
+                first = second;
+            }
+            return BoolLit.TRUE; 
+        }
     }
 }
