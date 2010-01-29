@@ -67,8 +67,15 @@
 	
 (define (member obj l)
 	(mem obj l equal?))
+
+(define (list-ref l idx)
+	(if (= idx 0)
+		(car l)
+		(list-ref (cdr l) (- idx 1))))
 	
 ;;Dummy functions
+(define (append l1 l2)
+	#f)
 (define (inexact? obj)
 	#f)
 (define (exact? obj)
@@ -95,9 +102,6 @@
 	#f)	
 (define (expt x y)
 	#f)		
-(define (append obj l)
-	#f)		
 (define (reverse l)
 	#f)
-(define (list-ref l obj)
-	#f)
+
