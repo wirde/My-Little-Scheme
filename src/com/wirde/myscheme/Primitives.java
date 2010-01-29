@@ -82,10 +82,15 @@ public class Primitives {
             }
         });
         
-        primitives.put(">", new PrimitiveProc(2, 2) {
+        primitives.put(">", new PrimitiveProc(2) {
             @Override
             public Node doApply(Cons args) {
-                return getInt(args.getFirst()).compareTo(getInt(args.getSecond())) == 1 ? BoolLit.TRUE : BoolLit.FALSE;
+                BigInteger first = getInt(args.getFirst());
+                for (Cons currentCons : args.getRestAsCons()) {
+                    if (first.compareTo(getInt(currentCons.getFirst())) != 1)
+                        return BoolLit.FALSE;
+                }
+                return BoolLit.TRUE; 
             }
         });
         
