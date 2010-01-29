@@ -24,7 +24,7 @@ public class Primitives {
     public static Map<String, Node> getPrimitives() {
         Map<String, Node> primitives = new HashMap<String, Node>();
 
-        // Primitive functions
+        //Numerical functions
 
         primitives.put("+", new PrimitiveProc(1) {
             @Override
@@ -60,6 +60,8 @@ public class Primitives {
                 return new IntLit(result);
             }
         });
+        
+        //Predicates
         
         primitives.put("not", new PrimitiveProc(1, 1) {
             @Override
@@ -123,13 +125,7 @@ public class Primitives {
             }
         });
         
-        primitives.put("apply", new PrimitiveProc(2, 2) {
-            @Override
-            public Node doApply(Cons args) {
-                return ((Proc) args.getFirst()).apply((Cons) args.getSecond());
-            }
-        });
-        
+        //Display
         primitives.put("write", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
@@ -146,16 +142,7 @@ public class Primitives {
             }
         });
 
-        primitives.put("make-string", new PrimitiveProc(1) {
-            @Override
-            public Node doApply(Cons args) {
-                String result = "";
-                for (Cons currentCons : args) {
-                    result += currentCons.getFirst();
-                }
-                return new StrLit(result);
-            }
-        });
+        //List functions
         
         primitives.put("cons", new PrimitiveProc(2, 2) {
             @Override
@@ -184,6 +171,27 @@ public class Primitives {
                 return new IntLit(((Cons) args.getFirst()).length());
             }
         });
+        
+        //Misc
+        
+        primitives.put("apply", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return ((Proc) args.getFirst()).apply((Cons) args.getSecond());
+            }
+        });
+        
+        primitives.put("make-string", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                String result = "";
+                for (Cons currentCons : args) {
+                    result += currentCons.getFirst();
+                }
+                return new StrLit(result);
+            }
+        });
+
         primitives.put("quit", new PrimitiveProc(0, 0) {
             @Override
             public Node doApply(Cons args) {
