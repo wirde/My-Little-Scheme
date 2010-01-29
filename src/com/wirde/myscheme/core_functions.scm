@@ -72,7 +72,18 @@
 	(if (= idx 0)
 		(car l)
 		(list-ref (cdr l) (- idx 1))))
-	
+
+(define (expt x y)
+	(define (expt-int res y)
+		(if (= x 0)
+			(if (= y 0)
+				1
+				0)
+			(if (= y 1)
+				res
+				(expt-int (* res x) (- y 1)))))
+	(expt-int x y))
+
 ;;Dummy functions
 (define (append l1 l2)
 	#f)
@@ -91,9 +102,6 @@
 (define (symbol? obj)
 	#f)
 (define (list? obj)
-	#f)	
-(define (expt x y)
-	#f)		
+	#f)			
 (define (reverse l)
 	#f)
-
