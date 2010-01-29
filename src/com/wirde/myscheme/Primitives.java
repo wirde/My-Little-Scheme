@@ -26,9 +26,11 @@ public class Primitives {
 
         //Numerical functions
 
-        primitives.put("+", new PrimitiveProc(1) {
+        primitives.put("+", new PrimitiveProc(0) {
             @Override
             public Node doApply(Cons args) {
+                if (args == Cons.NIL)
+                    return new IntLit(0);
                 BigInteger result = getInt(args.getFirst());
                 for (Cons currentCons : args.getRestAsCons()) {
                     result = result.add(getInt(currentCons.getFirst()));
@@ -37,9 +39,11 @@ public class Primitives {
             }
         });
 
-        primitives.put("-", new PrimitiveProc(1) {
+        primitives.put("-", new PrimitiveProc(0) {
             @Override
             public Node doApply(Cons args) {
+                if (args == Cons.NIL)
+                    return new IntLit(0);
                 BigInteger result = getInt(args.getFirst());
                 if (args.getRest().equals(Cons.NIL))
                     result = result.negate();
@@ -50,9 +54,11 @@ public class Primitives {
             }
         });
 
-        primitives.put("*", new PrimitiveProc(1) {
+        primitives.put("*", new PrimitiveProc(0) {
             @Override
             public Node doApply(Cons args) {
+                if (args == Cons.NIL)
+                    return new IntLit(1);
                 BigInteger result = getInt(args.getFirst());
                 for (Cons currentCons : args.getRestAsCons()) {
                     result = result.multiply(getInt(currentCons.getFirst()));
@@ -61,6 +67,32 @@ public class Primitives {
             }
         });
 
+        primitives.put("max", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                Node first = args.getFirst();
+                for (Cons currentCons : args.getRestAsCons()) {
+                    Node second = currentCons.getFirst(); 
+                    if (getInt(first).compareTo(getInt(second)) < 0)
+                        first = second;
+                }
+                return first;
+            }
+        });
+        
+        primitives.put("min", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                Node first = args.getFirst();
+                for (Cons currentCons : args.getRestAsCons()) {
+                    Node second = currentCons.getFirst(); 
+                    if (getInt(first).compareTo(getInt(second)) > 0)
+                        first = second;
+                }
+                return first;
+            }
+        });
+        
         primitives.put("remainder", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
