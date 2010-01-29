@@ -125,6 +125,21 @@ public class Primitives {
             }
         });
         
+        primitives.put("boolean?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst() instanceof BoolLit ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
+        primitives.put("pair?", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                Node arg = args.getFirst();
+                return arg instanceof Cons && arg != Cons.NIL ? BoolLit.TRUE : BoolLit.FALSE;
+            }
+        });
+        
         //Display
         primitives.put("write", new PrimitiveProc(1, 1) {
             @Override
