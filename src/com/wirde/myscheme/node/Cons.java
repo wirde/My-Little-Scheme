@@ -74,7 +74,7 @@ public class Cons extends Node implements Iterable<Cons> {
 		case QUOTED:
 			return getSecond();
 		case SET:
-			env.set((Ident) getSecond(), getThird());
+			env.set((Ident) getSecond(), getThird().eval(env));
 			return Cons.NIL;
 		case BEGIN:
 		    Cons exps = getRestAsCons();
