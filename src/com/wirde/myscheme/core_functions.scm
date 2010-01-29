@@ -84,6 +84,21 @@
 				(expt-int (* res x) (- y 1)))))
 	(expt-int x y))
 
+(define (zero? x)
+	(if (= x 0)
+		#t
+		#f))
+
+(define (positive? x)
+	(if (> x 0)
+		#t
+		#f))
+
+(define (negative? x)
+	(if (< x 0)
+		#t
+		#f))
+
 ;;Dummy functions
 (define (append l1 l2)
 	#f)
