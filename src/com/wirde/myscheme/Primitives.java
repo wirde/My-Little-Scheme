@@ -119,33 +119,10 @@ public class Primitives {
             }
         });
         
-        primitives.put("boolean?", new PrimitiveProc(1, 1) {
-            @Override
-            public Node doApply(Cons args) {
-                return args.getFirst() instanceof BoolLit ? BoolLit.TRUE : BoolLit.FALSE;
-            }
-        });
-        
-        primitives.put("number?", new PrimitiveProc(1, 1) {
-            @Override
-            public Node doApply(Cons args) {
-                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
-            }
-        });
-
-        primitives.put("integer?", new PrimitiveProc(1, 1) {
-            @Override
-            public Node doApply(Cons args) {
-                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
-            }
-        });
-        
-        primitives.put("exact?", new PrimitiveProc(1, 1) {
-            @Override
-            public Node doApply(Cons args) {
-                return args.getFirst() instanceof IntLit ? BoolLit.TRUE : BoolLit.FALSE;
-            }
-        });
+        primitives.put("boolean?", new TypeCompProc(BoolLit.class)); 
+        primitives.put("number?", new TypeCompProc(IntLit.class));
+        primitives.put("integer?", new TypeCompProc(IntLit.class));
+        primitives.put("exact?", new TypeCompProc(IntLit.class));
         
         primitives.put("inexact?", new PrimitiveProc(1, 1) {
             @Override
@@ -242,6 +219,21 @@ public class Primitives {
         return primitives;
     }
  
+    private static class TypeCompProc extends PrimitiveProc {
+
+        private final Class<?> clazz;
+
+        public TypeCompProc(Class<?> clazz) {
+            super(2, 2);
+            this.clazz = clazz;
+        }
+
+        @Override
+        public Node doApply(Cons args) {
+            return clazz.isInstance(args.getFirst()) ? BoolLit.TRUE : BoolLit.FALSE;
+        }
+    }
+    
     //TODO: Improve impl
     private static class NumCompProc extends PrimitiveProc {
         
