@@ -93,6 +93,13 @@ public class Primitives {
             }
         });
         
+        primitives.put("abs", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                return new IntLit(getInt(args.getFirst()).abs());
+            }
+        });
+        
         primitives.put("remainder", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
