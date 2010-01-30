@@ -114,6 +114,14 @@ public class Primitives {
             }
         });
         
+        primitives.put("modulo", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                BigInteger first = getInt(args.getFirst());
+                BigInteger second = getInt(args.getSecond());
+                return new IntLit(first.mod(second));
+            }
+        });
         
         //Predicates
         
