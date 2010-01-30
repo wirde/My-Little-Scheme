@@ -107,6 +107,14 @@ public class Primitives {
             }
         });
         
+        primitives.put("quotient", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return new IntLit(getInt(args.getFirst()).divide(getInt(args.getSecond())));
+            }
+        });
+        
+        
         //Predicates
         
         primitives.put("not", new PrimitiveProc(1, 1) {
