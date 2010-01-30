@@ -123,6 +123,21 @@ public class Primitives {
             }
         });
         
+        primitives.put("gcd", new PrimitiveProc(0) {
+            @Override
+            public Node doApply(Cons args) {
+                if (args == Cons.NIL)
+                    return new IntLit(0);
+                
+                BigInteger result = getInt(args.getFirst());
+                for (Cons next : args.getRestAsCons()) {
+                    BigInteger second = getInt(next.getFirst());
+                    result = result.gcd(second);
+                }
+                    return new IntLit(result);
+            }
+        });
+        
         //Predicates
         
         primitives.put("not", new PrimitiveProc(1, 1) {
