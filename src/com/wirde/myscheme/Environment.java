@@ -60,7 +60,7 @@ public class Environment {
                     break;
 
                 Node res = exp.eval(this);
-                if (out != null) {
+                if (out != null && res != null) {
                     res.accept(new PrettyPrintVisitor(out));
                     out.println();
                 }

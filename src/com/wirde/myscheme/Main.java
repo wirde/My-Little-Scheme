@@ -23,7 +23,11 @@ public class Main {
 				Node exp = parser.parseNext();
 				if (exp == null)
 					break;
-				exp.eval(env).accept(new PrettyPrintVisitor(System.out));
+				Node evaluatedExp = exp.eval(env);
+				if (evaluatedExp == null)
+				    System.out.println("Unspecified return value.");
+				else
+				    evaluatedExp.accept(new PrettyPrintVisitor(System.out));
 				System.out.println();
 			} catch (IOException e) {
 				e.printStackTrace();
