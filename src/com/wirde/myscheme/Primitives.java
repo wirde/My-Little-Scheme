@@ -11,6 +11,7 @@ import com.wirde.myscheme.node.Node;
 import com.wirde.myscheme.node.PrettyPrintVisitor;
 import com.wirde.myscheme.node.PrimitiveProc;
 import com.wirde.myscheme.node.Proc;
+import com.wirde.myscheme.node.StrLit;
 
 public class Primitives {
     
@@ -20,8 +21,7 @@ public class Primitives {
         throw new EvalException("Expected int, got: " + node);
     }
 
-    public static Map<String, 
-    Node> getPrimitives() {
+    public static Map<String, Node> getPrimitives() {
         Map<String, Node> primitives = new HashMap<String, Node>();
 
         // Primitive functions
@@ -112,7 +112,7 @@ public class Primitives {
         primitives.put("eqv?", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
-                return args.getFirst() == args.getSecond() ? BoolLit.TRUE : BoolLit.FALSE;
+                return args.getFirst().equals(args.getSecond()) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
@@ -146,6 +146,17 @@ public class Primitives {
             }
         });
 
+        primitives.put("make-string", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                String result = "";
+                for (Cons currentCons : args) {
+                    result += currentCons.getFirst();
+                }
+                return new StrLit(result);
+            }
+        });
+        
         primitives.put("cons", new PrimitiveProc(2, 2) {
             @Override
             public Node doApply(Cons args) {
@@ -172,7 +183,14 @@ public class Primitives {
             public Node doApply(Cons args) {
                 return new IntLit(((Cons) args.getFirst()).length());
             }
-        });        
+        });
+        primitives.put("quit", new PrimitiveProc(0, 0) {
+            @Override
+            public Node doApply(Cons args) {
+                System.exit(0);
+                return Cons.NIL;
+            }
+        });
         // Variables
         primitives.put("nil", Cons.NIL);
 

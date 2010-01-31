@@ -18,6 +18,6 @@ public class BoolLit extends Literal {
     }
 
     public static boolean isTrue(Node node) {
-        return node.equals(BoolLit.TRUE) ? true : false;
+        return node.equals(BoolLit.FALSE) ? false : true;
     }
 }

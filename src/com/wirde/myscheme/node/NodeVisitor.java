@@ -12,4 +12,6 @@ public interface NodeVisitor {
     void visit(BoolLit bool);
 
     void visit(IntLit intLit);
+
+    void visit(CharLit charLit);
 }

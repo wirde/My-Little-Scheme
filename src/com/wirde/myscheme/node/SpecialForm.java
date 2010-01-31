@@ -1,7 +1,7 @@
 package com.wirde.myscheme.node;
 
 public enum SpecialForm {
-    REGULAR, DEFINE, IF, QUOTED, LAMBDA, SET, BEGIN, LET, COND, AND, OR, DO, SET_CDR, SET_CAR;
+    REGULAR, DEFINE, IF, QUOTED, LAMBDA, SET, BEGIN, LET, COND, AND, OR, DO, SET_CDR, SET_CAR, CASE;
 
     public static SpecialForm toSpecialForm(Cons cons) {
         Node first = cons.getFirst();
@@ -40,6 +40,8 @@ public enum SpecialForm {
             return SET_CAR;
         if("set-cdr!".equals(name))
             return SET_CDR;
+        if("case".equals(name))
+            return CASE;        
         return REGULAR;
     }
 }

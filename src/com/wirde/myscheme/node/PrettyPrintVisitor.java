@@ -117,4 +117,9 @@ public class PrettyPrintVisitor implements NodeVisitor {
     public void visit(IntLit intLit) {
         print(intLit.toString());
     }
+
+    @Override
+    public void visit(CharLit charLit) {
+        print(charLit.toString());
+    }
 }

@@ -10,6 +10,7 @@ enum TokenType {
 	TRUET,
 	FALSET,
 	STRING,
+	CHAR,
 	QUOTE,
 	DOT
 }
@@ -30,6 +31,16 @@ class Token {
 	}
 }
 
+class CharToken extends Token {
+
+    final char charact;
+
+    public CharToken(char charact) {
+        super(TokenType.CHAR);
+        this.charact = charact;
+    }
+    
+}
 class StrToken extends Token {
 	final String strVal;
 	

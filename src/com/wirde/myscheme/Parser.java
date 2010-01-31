@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.wirde.myscheme.node.BoolLit;
+import com.wirde.myscheme.node.CharLit;
 import com.wirde.myscheme.node.Cons;
 import com.wirde.myscheme.node.Ident;
 import com.wirde.myscheme.node.IntLit;
@@ -46,6 +47,8 @@ class Scanner {
 			consumeChars(1);
 			return new Token(TokenType.RPAREN);
 		}
+		if (currentLine.startsWith("#\\"))
+		    return readCharConstant();
 		if (firstChar == '#')
 			return readBoolToken();
 		if (firstChar == '\'') {
@@ -58,54 +61,40 @@ class Scanner {
 		}
 
 		if (intPattern.matcher(currentLine).find()) 
-			return readIntToken();
+			return new IntToken(new BigInteger(readToken(intPattern)));
 		
-		if (strPattern.matcher(currentLine).find()) 
-			return readStrToken();
+		if (strPattern.matcher(currentLine).find()) {
+		    String str = readToken(strPattern);
+			return new StrToken(str.substring(1, str.length() - 1));
+		}
 		
 		if (identPattern.matcher(currentLine).find())
-			return readIdentToken();
+			return new IdentToken(readToken(identPattern));
 		
 		//Handle multiline strings, probably breaks for weird input
 		currentLine += "\n" + reader.readLine();
 		return getNextToken();
 	}
 
-	private void consumeChars(int nrChars) {
+    private void consumeChars(int nrChars) {
 		currentLine = currentLine.substring(nrChars, currentLine.length());		
 	}
 
-	//TODO: extract common code
-	
-	private Token readStrToken() {
-		Matcher strMatcher = strPattern.matcher(currentLine);
-		if (strMatcher.find()) {
-			String str = strMatcher.group();
-			consumeChars(str.length());
-			return new StrToken(str.substring(1, str.length() - 1));
-		} else 
-			throw new ParseException("Failed to read identifier. Context: " + currentLine);
-	}
+    private Token readCharConstant() {
+        Token token = new CharToken(currentLine.charAt(2));
+        consumeChars(3);
+        return token;
+    }
 
-	private Token readIdentToken() {
-		Matcher identMatcher = identPattern.matcher(currentLine);
-		if (identMatcher.find()) {
-			String ident = identMatcher.group();
-			consumeChars(ident.length());
-			return new IdentToken(ident);
-		} else 
-			throw new ParseException("Failed to read identifier. Context: " + currentLine);
-	}
-
-	private Token readIntToken() {
-		Matcher intMatcher = intPattern.matcher(currentLine);
-		if (intMatcher.find()) {
-			String number = intMatcher.group();
-			consumeChars(number.length());
-			return new IntToken(new BigInteger(number));
-		} else 
-			throw new ParseException("Failed to read int. Context: " + currentLine);
-	}
+    private String readToken(Pattern pattern) {
+        Matcher matcher = pattern.matcher(currentLine);
+        if (matcher.find()) {
+            String str = matcher.group();
+            consumeChars(str.length());
+            return str;
+        } else 
+            throw new ParseException("Failed to read token. Context: " + currentLine);        
+    }
 
 	private Token readBoolToken() {
 		if (currentLine.startsWith("#t")) {
@@ -119,7 +108,7 @@ class Scanner {
 	}
 
 	private boolean blank(String line) {
-		return line == null || line.matches("^\\s*;;.*") || line.matches("^\\s*$");
+		return line == null || line.matches("^\\s*;.*") || line.matches("^\\s*$");
 	}
 
 	private void getNextLine() throws IOException {
@@ -181,6 +170,8 @@ public class Parser {
 			return new IntLit(((IntToken) token).intVal);
 		case IDENT:
 			return new Ident(((IdentToken) token).name.toLowerCase());
+		case CHAR:
+		    return new CharLit(((CharToken) token).charact);
 		case TRUET:
 			return BoolLit.TRUE;
 		case FALSET:

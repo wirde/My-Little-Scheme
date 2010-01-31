@@ -104,7 +104,11 @@ public class Cons extends Node implements Iterable<Cons> {
 		            ||
 		            BoolLit.isTrue(predicate.eval(env))) {
                     Node res = Cons.NIL;
-                    for (Cons currentCons : ((Cons) condClauses.getFirst()).getRestAsCons()) {
+                    Cons expressions = ((Cons) condClauses.getFirst()).getRestAsCons();
+                    //TODO: predicate is evaluated twice...
+                    if (expressions.getFirst().equals(new Ident("=>")))
+                        return ((Proc) expressions.getSecond().eval(env)).apply(new Cons(predicate.eval(env), Cons.NIL));
+                    for (Cons currentCons : expressions) {
                         res = currentCons.getFirst().eval(env);
                     }
 		            return res;
@@ -113,15 +117,19 @@ public class Cons extends Node implements Iterable<Cons> {
 		    }
             return Cons.NIL;
 		case AND:
+		    Node res = BoolLit.TRUE;
 		    for (Cons currentCons : getRestAsCons()) {
-		        if (currentCons.getFirst().eval(env) != BoolLit.TRUE)
+		        res = currentCons.getFirst().eval(env);
+		        if (!BoolLit.isTrue(res))
 		            return BoolLit.FALSE;
 		    }
-		    return BoolLit.TRUE;
+		    return res;
 		case OR:
+		    res = BoolLit.FALSE;
 		    for (Cons currentCons : getRestAsCons()) {
-                if (currentCons.getFirst().eval(env) == BoolLit.TRUE)
-                    return BoolLit.TRUE;
+		        res = currentCons.getFirst().eval(env); 
+                if (BoolLit.isTrue(res))
+                    return res;
             }
             return BoolLit.FALSE;
 		case DO:
@@ -133,6 +141,9 @@ public class Cons extends Node implements Iterable<Cons> {
 		case SET_CDR:
 		    //TODO: Implement
 		    return Cons.NIL;
+		case CASE:
+            //TODO: Implement
+            return Cons.NIL;		    
 		default:
 			throw new EvalException("Unkown Special form: " + special);
 		}
@@ -168,6 +179,8 @@ public class Cons extends Node implements Iterable<Cons> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		if (this == Cons.NIL)
+		    return result;
 		result = prime * result + ((first == null) ? 0 : first.hashCode());
 		result = prime * result + ((rest == null) ? 0 : rest.hashCode());
 		return result;
