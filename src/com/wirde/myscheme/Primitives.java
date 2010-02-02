@@ -242,14 +242,20 @@ public class Primitives {
         primitives.put("car", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
-                return ((Cons) args.getFirst()).getFirst();
+                Cons first = (Cons) args.getFirst();
+                if (first == Cons.NIL)
+                    throw new EvalException("Can't take car of nil");
+                return first.getFirst();
             }
         });
 
         primitives.put("cdr", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
-                return ((Cons) args.getFirst()).getRest();
+                Cons first = (Cons) args.getFirst();
+                if (first == Cons.NIL)
+                    throw new EvalException("Can't take cdr of nil");                
+                return first.getRest();
             }
         });
 
