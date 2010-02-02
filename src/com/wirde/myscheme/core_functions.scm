@@ -109,6 +109,13 @@
 		#t
 		#f))
 
+(define (reverse l)
+	(define (reverse-iter new-list old-list)
+		(if (null? old-list)
+			new-list
+			(reverse-iter (cons (car old-list) new-list) (cdr old-list))))
+	(reverse-iter '() l))
+
 ;;Dummy functions
 (define (append l1 l2)
 	#f)
@@ -128,5 +135,3 @@
 	#f)
 (define (list? obj)
 	#f)			
-(define (reverse l)
-	#f)
