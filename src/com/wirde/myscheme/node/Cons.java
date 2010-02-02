@@ -63,19 +63,23 @@ public class Cons extends Node implements Iterable<Cons> {
 				env.bind((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
 			} else
 				throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), this);
-            return NIL;
+            return null;
 		case LAMBDA:
 			return new Lambda(getSecond(), getRestAsCons().getRestAsCons(), env);
 		case IF:
 			if (BoolLit.TRUE.equals(getSecond().eval(env)))
 				return getThird().eval(env);
-			else
-				return getFourth().eval(env);
+			else {
+				Node falseRes = getFourth();
+				if (falseRes != NIL)
+				    return falseRes.eval(env);
+				return null;
+			}
 		case QUOTED:
 			return getSecond();
 		case SET:
-			env.set((Ident) getSecond(), getThird());
-			return Cons.NIL;
+			env.set((Ident) getSecond(), getThird().eval(env));
+			return null;
 		case BEGIN:
 		    Cons exps = getRestAsCons();
 		    Node result = NIL;
@@ -115,7 +119,7 @@ public class Cons extends Node implements Iterable<Cons> {
 		        }
 		        condClauses = condClauses.getRestAsCons();
 		    }
-            return Cons.NIL;
+            return null;
 		case AND:
 		    Node res = BoolLit.TRUE;
 		    for (Cons currentCons : getRestAsCons()) {

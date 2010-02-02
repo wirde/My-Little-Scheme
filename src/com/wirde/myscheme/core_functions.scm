@@ -67,13 +67,50 @@
 	
 (define (member obj l)
 	(mem obj l equal?))
-	
+
+(define (list-ref l idx)
+	(if (= idx 0)
+		(car l)
+		(list-ref (cdr l) (- idx 1))))
+
+(define (expt x y)
+	(define (expt-int res y)
+		(if (= x 0)
+			(if (= y 0)
+				1
+				0)
+			(if (= y 1)
+				res
+				(expt-int (* res x) (- y 1)))))
+	(expt-int x y))
+
+(define (zero? x)
+	(if (= x 0)
+		#t
+		#f))
+
+(define (positive? x)
+	(if (> x 0)
+		#t
+		#f))
+
+(define (negative? x)
+	(if (< x 0)
+		#t
+		#f))
+
+(define (odd? x)
+	(if (zero? (remainder x 2))
+		#f
+		#t))
+
+(define (even? x)
+	(if (zero? (remainder x 2))
+		#t
+		#f))
+
 ;;Dummy functions
-(define (inexact? obj)
-	#f)
-(define (exact? obj)
-	#f)
-(define (integer? obj)
+(define (append l1 l2)
 	#f)
 (define (rational? obj)
 	#f)
@@ -81,27 +118,15 @@
 	#f)
 (define (complex? obj)
 	#f)
-(define (number? obj)
-	#f)
 (define (string? obj)
 	#f)
 (define (vector? obj)
-	#f)
-(define (boolean? obj)
 	#f)
 (define (char? obj)
 	#f)
 (define (symbol? obj)
 	#f)
 (define (list? obj)
-	#f)
-(define (pair? obj)
-	#f)	
-(define (expt x y)
-	#f)		
-(define (append obj l)
-	#f)		
+	#f)			
 (define (reverse l)
-	#f)
-(define (list-ref l obj)
 	#f)
