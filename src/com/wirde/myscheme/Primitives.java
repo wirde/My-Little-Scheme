@@ -197,6 +197,7 @@ public class Primitives {
         primitives.put("number?", new TypeCompProc(IntLit.class));
         primitives.put("integer?", new TypeCompProc(IntLit.class));
         primitives.put("exact?", new TypeCompProc(IntLit.class));
+        primitives.put("list?", new TypeCompProc(Cons.class));
         
         primitives.put("inexact?", new PrimitiveProc(1, 1) {
             @Override

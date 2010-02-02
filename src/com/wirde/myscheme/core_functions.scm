@@ -133,5 +133,3 @@
 	#f)
 (define (symbol? obj)
 	#f)
-(define (list? obj)
-	#f)			

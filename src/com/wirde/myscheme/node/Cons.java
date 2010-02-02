@@ -7,8 +7,9 @@ import com.wirde.myscheme.EvalException;
 
 public class Cons extends Node implements Iterable<Cons> {
     public static final Cons NIL = new Cons();
-    private final Node first;
-    private final Node rest;
+    //Can't be final, must be able to set using set-car! and set-cdr!
+    private Node first;  
+    private Node rest;
     
     public Cons() {
         this.first = this.rest = this;
@@ -140,11 +141,11 @@ public class Cons extends Node implements Iterable<Cons> {
 		    //TODO: Implement
 		    return Cons.NIL;
 		case SET_CAR:
-		    //TODO: Implement
-            return Cons.NIL;
+		    ((Cons) (getSecond().eval(env))).first = getThird().eval(env);
+		    return null;
 		case SET_CDR:
-		    //TODO: Implement
-		    return Cons.NIL;
+		    ((Cons) (getSecond().eval(env))).rest = getThird().eval(env);
+            return null;
 		case CASE:
             //TODO: Implement
             return Cons.NIL;		    
@@ -153,7 +154,7 @@ public class Cons extends Node implements Iterable<Cons> {
 		}
     }
 	
-	private Cons evaluateList(Cons cons, Environment env) {
+    private Cons evaluateList(Cons cons, Environment env) {
 		if (cons == null)
 			return null;
 		
