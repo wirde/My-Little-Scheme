@@ -97,7 +97,7 @@ public class Cons extends Node implements Iterable<Cons> {
 		    while (!paramList.equals(Cons.NIL)) {
 		        Cons paramArgPair = (Cons) paramList.getFirst();
 		        params = new Cons(paramArgPair.getFirst(), params);
-		        args = new Cons(paramArgPair.getSecond(), args);
+		        args = new Cons(paramArgPair.getSecond().eval(env), args);
 		        paramList = paramList.getRestAsCons();
 		    }
 		    return new Lambda(params, body, env).apply(args);
