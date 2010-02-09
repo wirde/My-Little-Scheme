@@ -125,8 +125,6 @@
 	#f)
 (define (complex? obj)
 	#f)
-(define (string? obj)
-	#f)
 (define (vector? obj)
 	#f)
 (define (char? obj)

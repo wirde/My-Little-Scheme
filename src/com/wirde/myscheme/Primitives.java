@@ -196,6 +196,7 @@ public class Primitives {
         primitives.put("boolean?", new TypeCompProc(BoolLit.class)); 
         primitives.put("number?", new TypeCompProc(IntLit.class));
         primitives.put("integer?", new TypeCompProc(IntLit.class));
+        primitives.put("string?", new TypeCompProc(StrLit.class));
         primitives.put("exact?", new TypeCompProc(IntLit.class));
         primitives.put("list?", new TypeCompProc(Cons.class));
         
