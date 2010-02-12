@@ -24,6 +24,10 @@ public class Cons extends Node implements Iterable<Cons> {
         return first;
     }
     
+    public void setFirst(Node first) {
+        this.first = first;
+    }
+    
     public Node getSecond() {
         return getRestAsCons().first;
     }
@@ -42,6 +46,10 @@ public class Cons extends Node implements Iterable<Cons> {
     
     public Node getRest() {
         return rest;
+    }
+    
+    public void setRest(Node rest) {
+        this.rest = rest;
     }
     
     public Node eval(Environment env) {
@@ -140,12 +148,6 @@ public class Cons extends Node implements Iterable<Cons> {
 		case DO:
 		    //TODO: Implement
 		    return Cons.NIL;
-		case SET_CAR:
-		    ((Cons) (getSecond().eval(env))).first = getThird().eval(env);
-		    return null;
-		case SET_CDR:
-		    ((Cons) (getSecond().eval(env))).rest = getThird().eval(env);
-            return null;
 		case CASE:
             //TODO: Implement
             return Cons.NIL;		    

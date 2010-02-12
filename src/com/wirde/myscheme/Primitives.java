@@ -261,6 +261,22 @@ public class Primitives {
             }
         });
 
+        primitives.put("set-car!", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                ((Cons) (args.getFirst())).setFirst(args.getSecond());
+                return null;
+            }
+        });
+
+        primitives.put("set-cdr!", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                ((Cons) (args.getFirst())).setRest(args.getSecond());
+                return null;
+            }
+        });
+
         primitives.put("length", new PrimitiveProc(1, 1) {
             @Override
             public Node doApply(Cons args) {
