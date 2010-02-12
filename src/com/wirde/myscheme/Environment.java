@@ -1,7 +1,9 @@
 package com.wirde.myscheme;
 
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.HashMap;
@@ -47,11 +49,15 @@ public class Environment {
     }
 
     public void evalFile(String file) throws IOException {
-        evalFile(file, null);
+        evalStream(new FileInputStream(file), null);
     }
 
-    public void evalFile(String file, PrintStream out) throws IOException {
-        Reader reader = new FileReader(file);
+    public void evalResource(String resource) throws IOException {
+        evalStream(Environment.class.getResourceAsStream(resource), null);
+    }
+    
+    public void evalStream(InputStream is, PrintStream out) throws IOException {
+        Reader reader = new InputStreamReader(is);
         Parser parser = new Parser(reader);
         try {
             while (true) {
@@ -66,7 +72,7 @@ public class Environment {
                 }
             }
             if (reader.read() != -1)
-                throw new ParseException("Error reading file: " + file);
+                throw new ParseException("Error reading stream");
         } finally {
             reader.close();
         }

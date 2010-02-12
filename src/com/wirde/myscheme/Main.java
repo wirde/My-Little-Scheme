@@ -11,7 +11,7 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		Environment env = new Environment();
-		env.evalFile("src/com/wirde/myscheme/core_functions.scm");
+		env.evalResource("/com/wirde/myscheme/core_functions.scm");
 		startRepl(env);
 	}
 
