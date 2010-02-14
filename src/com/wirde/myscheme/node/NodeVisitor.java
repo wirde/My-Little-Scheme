@@ -1,5 +1,7 @@
 package com.wirde.myscheme.node;
 
+import com.wirde.myscheme.Environment;
+
 public interface NodeVisitor {
     void visit(Proc proc);
 
@@ -14,4 +16,6 @@ public interface NodeVisitor {
     void visit(IntLit intLit);
 
     void visit(CharLit charLit);
+
+    void visit(Environment environment);
 }

@@ -21,7 +21,7 @@ public class Primitives {
         throw new EvalException("Expected int, got: " + node);
     }
 
-    public static Map<String, Node> getPrimitives() {
+    public static Map<String, Node> createPrimitives() {
         Map<String, Node> primitives = new HashMap<String, Node>();
 
         //Numerical functions
@@ -290,6 +290,13 @@ public class Primitives {
             @Override
             public Node doApply(Cons args) {
                 return ((Proc) args.getFirst()).apply((Cons) args.getSecond());
+            }
+        });
+
+        primitives.put("eval", new PrimitiveProc(2, 2) {
+            @Override
+            public Node doApply(Cons args) {
+                return args.getFirst().eval((Environment) args.getSecond());
             }
         });
         

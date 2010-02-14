@@ -10,7 +10,7 @@ public class Main {
 	
 	
 	public static void main(String[] args) throws IOException {
-		Environment env = new Environment();
+		Environment env = new Environment(true);
 		env.evalResource("/com/wirde/myscheme/core_functions.scm");
 		startRepl(env);
 	}

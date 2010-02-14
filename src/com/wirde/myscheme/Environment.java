@@ -9,11 +9,19 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.wirde.myscheme.node.Cons;
 import com.wirde.myscheme.node.Ident;
+import com.wirde.myscheme.node.IntLit;
+import com.wirde.myscheme.node.Literal;
 import com.wirde.myscheme.node.Node;
+import com.wirde.myscheme.node.NodeVisitor;
 import com.wirde.myscheme.node.PrettyPrintVisitor;
+import com.wirde.myscheme.node.PrimitiveProc;
 
-public class Environment {
+public class Environment extends Literal {
+    //TODO: investigate how the null environment should be defined...
+    protected static final Environment NULL_ENV = new Environment(false);
+    protected static final Environment REPORT_ENV = new Environment(true);
 
     private Map<String, Node> bindings = new HashMap<String, Node>();
 
@@ -23,10 +31,27 @@ public class Environment {
         this.parent = parent;
     }
 
-    public Environment() {
-        bindings.putAll(Primitives.getPrimitives());
+    public Environment(boolean bindCore) {
+        if (bindCore)
+            bindings.putAll(Primitives.createPrimitives());
+        bindings.put("scheme-report-environment", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                if (!args.getFirst().equals(new IntLit(4)))
+                    throw new EvalException("Expected version 4");
+                return REPORT_ENV;
+            }
+        });
+        bindings.put("scheme-null-environment", new PrimitiveProc(1, 1) {
+            @Override
+            public Node doApply(Cons args) {
+                if (!args.getFirst().equals(new IntLit(4)))
+                    throw new EvalException("Expected version 4");
+                return NULL_ENV;
+            }
+        });
     }
-
+    
     public Node lookup(Ident ident) {
         Node res = bindings.get(ident.getName());
         if (res == null) {
@@ -80,5 +105,10 @@ public class Environment {
 
     public void setParent(Environment env) {
         parent = env;
+    }
+
+    @Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
     }
 }

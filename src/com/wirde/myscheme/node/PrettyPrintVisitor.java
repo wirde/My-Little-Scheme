@@ -2,6 +2,8 @@ package com.wirde.myscheme.node;
 
 import java.io.PrintStream;
 
+import com.wirde.myscheme.Environment;
+
 public class PrettyPrintVisitor implements NodeVisitor {
 
     private int position = 0;
@@ -121,5 +123,10 @@ public class PrettyPrintVisitor implements NodeVisitor {
     @Override
     public void visit(CharLit charLit) {
         print(charLit.toString());
+    }
+
+    @Override
+    public void visit(Environment environment) {
+        print("scheme-environment");
     }
 }
