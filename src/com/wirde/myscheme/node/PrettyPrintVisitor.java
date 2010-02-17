@@ -129,4 +129,9 @@ public class PrettyPrintVisitor implements NodeVisitor {
     public void visit(Environment environment) {
         print("scheme-environment");
     }
+
+    @Override
+    public void visit(Vector vector) {
+        print(vector.toString());
+    }
 }

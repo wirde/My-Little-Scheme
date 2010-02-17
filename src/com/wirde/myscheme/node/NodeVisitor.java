@@ -18,4 +18,6 @@ public interface NodeVisitor {
     void visit(CharLit charLit);
 
     void visit(Environment environment);
+
+    void visit(Vector vector);
 }

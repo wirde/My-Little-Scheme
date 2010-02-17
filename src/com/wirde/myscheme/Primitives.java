@@ -12,6 +12,7 @@ import com.wirde.myscheme.node.PrettyPrintVisitor;
 import com.wirde.myscheme.node.PrimitiveProc;
 import com.wirde.myscheme.node.Proc;
 import com.wirde.myscheme.node.StrLit;
+import com.wirde.myscheme.node.Vector;
 
 public class Primitives {
     
@@ -137,7 +138,7 @@ public class Primitives {
                     return new IntLit(result);
             }
         });
-        
+                        
         //Predicates
         
         primitives.put("not", new PrimitiveProc(1, 1) {
@@ -232,6 +233,18 @@ public class Primitives {
             }
         });
 
+        //Vectors
+        primitives.put("make-vector", new PrimitiveProc(1, 2) {
+            @Override
+            public Node doApply(Cons args) {        
+                BigInteger size = getInt(args.getFirst());
+                if (args.getSecond() == Cons.NIL)
+                    return new Vector(size.intValue());
+                else
+                    return new Vector(size.intValue(), args.getSecond());
+            }
+        });
+        
         //List functions
         
         primitives.put("cons", new PrimitiveProc(2, 2) {

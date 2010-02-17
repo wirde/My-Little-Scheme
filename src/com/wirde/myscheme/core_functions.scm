@@ -64,7 +64,7 @@
 	
 (define (memv obj l)
 	(mem obj l eqv?))
-	
+
 (define (member obj l)
 	(mem obj l equal?))
 
