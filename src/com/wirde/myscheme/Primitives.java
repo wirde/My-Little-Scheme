@@ -300,6 +300,16 @@ public class Primitives {
             }
         });
         
+        primitives.put("time", new PrimitiveProc(1) {
+            @Override
+            public Node doApply(Cons args) {
+                long start = System.nanoTime();
+                Node result = ((Proc) args.getFirst()).apply(args.getRestAsCons());
+                System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " microseconds");
+                return result;
+            }
+        });
+        
         primitives.put("make-string", new PrimitiveProc(1) {
             @Override
             public Node doApply(Cons args) {
