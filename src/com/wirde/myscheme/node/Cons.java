@@ -3,7 +3,6 @@ package com.wirde.myscheme.node;
 import java.util.Iterator;
 
 import com.wirde.myscheme.Environment;
-import com.wirde.myscheme.EvalException;
 
 public class Cons extends Node implements Iterable<Cons> {
     public static final Cons NIL = new Cons();
@@ -53,119 +52,10 @@ public class Cons extends Node implements Iterable<Cons> {
     }
     
     public Node eval(Environment env) {
-    	SpecialForm special = SpecialForm.toSpecialForm(this);
-    	switch (special) {
-		case REGULAR:
-            Proc proc = (Proc) first.eval(env);        
-            return proc.apply(evaluateList(getRestAsCons(), env));
-		case DEFINE:
-			if (Cons.NIL == getRest())
-				throw new EvalException("Expected identifier, got nil");
-			Node definee = getSecond();
-			if (definee instanceof Ident) {
-				if (Cons.NIL == getRestAsCons().getRest())
-					throw new EvalException("Expected expression, got nil");
-				env.bind((Ident) definee, getThird().eval(env));
-			}
-			else if (definee instanceof Cons) {
-				Cons lambdaDef = (Cons) definee;
-				env.bind((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.rest, getRestAsCons().getRestAsCons(), env));
-			} else
-				throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), this);
-            return null;
-		case LAMBDA:
-			return new Lambda(getSecond(), getRestAsCons().getRestAsCons(), env);
-		case IF:
-			if (BoolLit.TRUE.equals(getSecond().eval(env)))
-				return getThird().eval(env);
-			else {
-				Node falseRes = getFourth();
-				if (falseRes != NIL)
-				    return falseRes.eval(env);
-				return null;
-			}
-		case QUOTED:
-			return getSecond();
-		case SET:
-			env.set((Ident) getSecond(), getThird().eval(env));
-			return null;
-		case BEGIN:
-		    Cons exps = getRestAsCons();
-		    Node result = NIL;
-		    while (!exps.equals(NIL)) {
-		        result = exps.getFirst().eval(env);
-		        exps = exps.getRestAsCons();
-		    }
-		    return result;
-		case LET:
-		    Cons params = Cons.NIL;
-		    Cons args = Cons.NIL;
-		    Cons paramList = (Cons) getSecond();
-		    Cons body = getRestAsCons().getRestAsCons();
-		    while (!paramList.equals(Cons.NIL)) {
-		        Cons paramArgPair = (Cons) paramList.getFirst();
-		        params = new Cons(paramArgPair.getFirst(), params);
-		        args = new Cons(paramArgPair.getSecond().eval(env), args);
-		        paramList = paramList.getRestAsCons();
-		    }
-		    return new Lambda(params, body, env).apply(args);
-		case COND:
-		    Cons condClauses = getRestAsCons();
-		    while (!condClauses.equals(Cons.NIL)) {
-		        Node predicate = ((Cons) condClauses.getFirst()).getFirst();
-                if ((condClauses.getRest().equals(Cons.NIL) && predicate.equals(new Ident("else")))
-		            ||
-		            BoolLit.isTrue(predicate.eval(env))) {
-                    Node res = Cons.NIL;
-                    Cons expressions = ((Cons) condClauses.getFirst()).getRestAsCons();
-                    //TODO: predicate is evaluated twice...
-                    if (expressions.getFirst().equals(new Ident("=>")))
-                        return ((Proc) expressions.getSecond().eval(env)).apply(new Cons(predicate.eval(env), Cons.NIL));
-                    for (Cons currentCons : expressions) {
-                        res = currentCons.getFirst().eval(env);
-                    }
-		            return res;
-		        }
-		        condClauses = condClauses.getRestAsCons();
-		    }
-            return null;
-		case AND:
-		    Node res = BoolLit.TRUE;
-		    for (Cons currentCons : getRestAsCons()) {
-		        res = currentCons.getFirst().eval(env);
-		        if (!BoolLit.isTrue(res))
-		            return BoolLit.FALSE;
-		    }
-		    return res;
-		case OR:
-		    res = BoolLit.FALSE;
-		    for (Cons currentCons : getRestAsCons()) {
-		        res = currentCons.getFirst().eval(env); 
-                if (BoolLit.isTrue(res))
-                    return res;
-            }
-            return BoolLit.FALSE;
-		case DO:
-		    //TODO: Implement
-		    return Cons.NIL;
-		case CASE:
-            //TODO: Implement
-            return Cons.NIL;		    
-		default:
-			throw new EvalException("Unkown Special form: " + special);
-		}
+        SpecialForm special = SpecialForm.toSpecialForm(this);
+        return special.evalForm(this, env);
     }
-	
-    private Cons evaluateList(Cons cons, Environment env) {
-		if (cons == null)
-			return null;
 		
-		if (Cons.NIL == cons)
-			return Cons.NIL;
-		
-		return new Cons(cons.getFirst().eval(env), evaluateList(cons.getRestAsCons(), env));
-	}
-	
 	@Override
 	public void accept(NodeVisitor visitor) {
 	    visitor.visit(this);
@@ -181,7 +71,6 @@ public class Cons extends Node implements Iterable<Cons> {
 		return retVal;
 	}
 
-	//FIXME!
 	@Override
 	public int hashCode() {
 		final int prime = 31;
