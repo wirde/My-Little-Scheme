@@ -1,0 +1,27 @@
+Implemented special forms
+-------------------------
+define (including syntactic sugar for lambdas)
+if
+quote
+lambda
+set!
+begin
+let
+cond
+and
+or
+
+Implemented types
+-----------------
+string
+integer
+pair (list)
+bool
+procedure
+
+Next up
+----
+Proper tail calls
+Macros
+vector
+quasiquotation
