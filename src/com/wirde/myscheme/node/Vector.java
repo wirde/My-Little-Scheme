@@ -56,8 +56,10 @@ public class Vector extends Node {
     @Override
     public String toString() {
         String result = "#(";
-        for (Node node : contents) {
-            result += node + " "; //TODO: Fix trailing space
+        if (contents.length > 0)
+            result += contents[0];
+        for (int i = 1; i < contents.length; i++) {
+            result += " " + contents[i];
         }
         result += ")";
         return result;
