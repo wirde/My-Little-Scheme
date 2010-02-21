@@ -27,8 +27,8 @@ public class Vector extends Node {
     }
 
     @Override
-    public Node eval(Environment env) {
-        // TODO Auto-generated method stub
+    public Node eval(Environment env, boolean forceEvaluation) {
+        // TODO Implement
         return null;
     }
     

@@ -10,7 +10,7 @@ public class Ident extends Node {
 	}
 
     @Override
-    public Node eval(Environment env) {
+    public Node eval(Environment env, boolean forceEvaluation) {
         return env.lookup(this);
     }
     

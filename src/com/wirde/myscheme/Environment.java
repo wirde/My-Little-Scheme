@@ -36,7 +36,7 @@ public class Environment extends Literal {
             bindings.putAll(Primitives.createPrimitives());
         bindings.put("scheme-report-environment", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (!args.getFirst().equals(new IntLit(4)))
                     throw new EvalException("Expected version 4");
                 return REPORT_ENV;
@@ -44,7 +44,7 @@ public class Environment extends Literal {
         });
         bindings.put("scheme-null-environment", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (!args.getFirst().equals(new IntLit(4)))
                     throw new EvalException("Expected version 4");
                 return NULL_ENV;
@@ -90,7 +90,7 @@ public class Environment extends Literal {
                 if (exp == null)
                     break;
 
-                Node res = exp.eval(this);
+                Node res = exp.eval(this, true);
                 if (out != null && res != null) {
                     res.accept(new PrettyPrintVisitor(out));
                     out.println();

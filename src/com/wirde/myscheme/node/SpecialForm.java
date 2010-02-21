@@ -7,21 +7,21 @@ public enum SpecialForm {
 
     REGULAR {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
-          Proc proc = (Proc) exp.getFirst().eval(env);        
-          return proc.apply(evaluateList(exp.getRestAsCons(), env));
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
+            Proc proc = (Proc) exp.getFirst().eval(env, true);
+            return proc.apply(evaluateList(exp.getRestAsCons(), env), forceEvaluation);
         }
     }, 
     DEFINE {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             if (Cons.NIL == exp.getRest())
                 throw new EvalException("Expected identifier, got nil");
             Node definee = exp.getSecond();
             if (definee instanceof Ident) {
                 if (Cons.NIL == exp.getRestAsCons().getRest())
                     throw new EvalException("Expected expression, got nil");
-                env.bind((Ident) definee, exp.getThird().eval(env));
+                env.bind((Ident) definee, exp.getThird().eval(env, true));
             }
             else if (definee instanceof Cons) {
                 Cons lambdaDef = (Cons) definee;
@@ -33,43 +33,44 @@ public enum SpecialForm {
     }, 
     IF {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
-            if (BoolLit.TRUE.equals(exp.getSecond().eval(env)))
-                return exp.getThird().eval(env);
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
+            if (BoolLit.TRUE.equals(exp.getSecond().eval(env, true)))
+                return exp.getThird().eval(env, forceEvaluation);
             else {
                 Node falseRes = exp.getFourth();
                 if (falseRes != Cons.NIL)
-                    return falseRes.eval(env);
+                    return falseRes.eval(env, forceEvaluation);
                 return null;
             }
         }
     }, 
     QUOTED {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             return exp.getSecond();
         }
     }, 
     LAMBDA {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             return new Lambda(exp.getSecond(), exp.getRestAsCons().getRestAsCons(), env);
         }
     }, 
     SET {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
-            env.set((Ident) exp.getSecond(), exp.getThird().eval(env));
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
+            env.set((Ident) exp.getSecond(), exp.getThird().eval(env, true));
             return null;
         }
     }, 
     BEGIN {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
+            //TODO: create lambda instead...
             Cons exps = exp.getRestAsCons();
             Node result = Cons.NIL;
             while (!exps.equals(Cons.NIL)) {
-                result = exps.getFirst().eval(env);
+                result = exps.getFirst().eval(env, true);
                 exps = exps.getRestAsCons();
             }
             return result;
@@ -77,7 +78,7 @@ public enum SpecialForm {
     }, 
     LET {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             Cons params = Cons.NIL;
             Cons args = Cons.NIL;
             Cons paramList = (Cons) exp.getSecond();
@@ -85,28 +86,28 @@ public enum SpecialForm {
             while (!paramList.equals(Cons.NIL)) {
                 Cons paramArgPair = (Cons) paramList.getFirst();
                 params = new Cons(paramArgPair.getFirst(), params);
-                args = new Cons(paramArgPair.getSecond().eval(env), args);
+                args = new Cons(paramArgPair.getSecond().eval(env, true), args);
                 paramList = paramList.getRestAsCons();
             }
-            return new Lambda(params, body, env).apply(args);
+            return new Lambda(params, body, env).apply(args, forceEvaluation);
         }
     }, 
     COND {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             Cons condClauses = exp.getRestAsCons();
             while (!condClauses.equals(Cons.NIL)) {
                 Node predicate = ((Cons) condClauses.getFirst()).getFirst();
                 if ((condClauses.getRest().equals(Cons.NIL) && predicate.equals(new Ident("else")))
                         ||
-                        BoolLit.isTrue(predicate.eval(env))) {
+                        BoolLit.isTrue(predicate.eval(env, true))) {
                     Node res = Cons.NIL;
                     Cons expressions = ((Cons) condClauses.getFirst()).getRestAsCons();
                     //TODO: predicate is evaluated twice...
                     if (expressions.getFirst().equals(new Ident("=>")))
-                        return ((Proc) expressions.getSecond().eval(env)).apply(new Cons(predicate.eval(env), Cons.NIL));
+                        return ((Proc) expressions.getSecond().eval(env, true)).apply(new Cons(predicate.eval(env, true), Cons.NIL), forceEvaluation);
                     for (Cons currentCons : expressions) {
-                        res = currentCons.getFirst().eval(env);
+                        res = currentCons.getFirst().eval(env, forceEvaluation);
                     }
                     return res;
                 }
@@ -117,10 +118,10 @@ public enum SpecialForm {
     }, 
     AND {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             Node res = BoolLit.TRUE;
             for (Cons currentCons : exp.getRestAsCons()) {
-                res = currentCons.getFirst().eval(env);
+                res = currentCons.getFirst().eval(env, true);
                 if (!BoolLit.isTrue(res))
                     return BoolLit.FALSE;
             }
@@ -129,10 +130,10 @@ public enum SpecialForm {
     }, 
     OR {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             Node res = BoolLit.FALSE;
             for (Cons currentCons : exp.getRestAsCons()) {
-                res = currentCons.getFirst().eval(env); 
+                res = currentCons.getFirst().eval(env, true);
                 if (BoolLit.isTrue(res))
                     return res;
             }
@@ -141,14 +142,14 @@ public enum SpecialForm {
     }, 
     DO {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             //TODO: Implement
             return Cons.NIL;
         }
     }, 
     CASE {
         @Override
-        public Node evalForm(Cons exp, Environment env) {
+        public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
             //TODO: Implement
             return Cons.NIL;
         }
@@ -192,7 +193,7 @@ public enum SpecialForm {
         return REGULAR;
     }
 
-    public abstract Node evalForm(Cons exp, Environment env);
+    public abstract Node evalForm(Cons exp, Environment env, boolean forceEvaluation);
     
     private static Cons evaluateList(Cons cons, Environment env) {
         if (cons == null)
@@ -201,6 +202,6 @@ public enum SpecialForm {
         if (Cons.NIL == cons)
             return Cons.NIL;
         
-        return new Cons(cons.getFirst().eval(env), evaluateList(cons.getRestAsCons(), env));
+        return new Cons(cons.getFirst().eval(env, true), evaluateList(cons.getRestAsCons(), env));
     }
 }

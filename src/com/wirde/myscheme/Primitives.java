@@ -29,7 +29,7 @@ public class Primitives {
 
         primitives.put("+", new PrimitiveProc(0) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (args == Cons.NIL)
                     return new IntLit(0);
                 BigInteger result = getInt(args.getFirst());
@@ -42,7 +42,7 @@ public class Primitives {
 
         primitives.put("-", new PrimitiveProc(0) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (args == Cons.NIL)
                     return new IntLit(0);
                 BigInteger result = getInt(args.getFirst());
@@ -57,7 +57,7 @@ public class Primitives {
 
         primitives.put("*", new PrimitiveProc(0) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (args == Cons.NIL)
                     return new IntLit(1);
                 BigInteger result = getInt(args.getFirst());
@@ -70,7 +70,7 @@ public class Primitives {
 
         primitives.put("max", new PrimitiveProc(1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 Node first = args.getFirst();
                 for (Cons currentCons : args.getRestAsCons()) {
                     Node second = currentCons.getFirst(); 
@@ -83,7 +83,7 @@ public class Primitives {
         
         primitives.put("min", new PrimitiveProc(1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 Node first = args.getFirst();
                 for (Cons currentCons : args.getRestAsCons()) {
                     Node second = currentCons.getFirst(); 
@@ -96,28 +96,28 @@ public class Primitives {
         
         primitives.put("abs", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return new IntLit(getInt(args.getFirst()).abs());
             }
         });
         
         primitives.put("remainder", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return new IntLit(getInt(args.getFirst()).remainder(getInt(args.getSecond())));
             }
         });
         
         primitives.put("quotient", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return new IntLit(getInt(args.getFirst()).divide(getInt(args.getSecond())));
             }
         });
         
         primitives.put("modulo", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 BigInteger first = getInt(args.getFirst());
                 BigInteger second = getInt(args.getSecond());
                 return new IntLit(first.mod(second));
@@ -126,7 +126,7 @@ public class Primitives {
         
         primitives.put("gcd", new PrimitiveProc(0) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 if (args == Cons.NIL)
                     return new IntLit(0);
                 
@@ -143,14 +143,14 @@ public class Primitives {
         
         primitives.put("not", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst() == BoolLit.FALSE ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
         primitives.put("=", new PrimitiveProc(2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 BigInteger first = getInt(args.getFirst());
                 for (Cons currentCons : args.getRestAsCons()) {
                     if (!getInt(currentCons.getFirst()).equals(first))
@@ -167,14 +167,14 @@ public class Primitives {
         
         primitives.put("equal?", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst().equals(args.getSecond()) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
 
         primitives.put("eq?", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst() == args.getSecond() ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
@@ -182,14 +182,14 @@ public class Primitives {
         //TODO: Not correct, but will have to do for now
         primitives.put("eqv?", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst().equals(args.getSecond()) ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
         
         primitives.put("procedure?", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst() instanceof Proc ? BoolLit.TRUE : BoolLit.FALSE;
             }
         });
@@ -203,14 +203,14 @@ public class Primitives {
         
         primitives.put("inexact?", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return args.getFirst() instanceof IntLit ? BoolLit.FALSE : BoolLit.TRUE;
             }
         });
         
         primitives.put("pair?", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 Node arg = args.getFirst();
                 return arg instanceof Cons && arg != Cons.NIL ? BoolLit.TRUE : BoolLit.FALSE;
             }
@@ -219,7 +219,7 @@ public class Primitives {
         //Display
         primitives.put("write", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 args.getFirst().accept(new PrettyPrintVisitor(System.out));
                 return Cons.NIL;
             }
@@ -227,7 +227,7 @@ public class Primitives {
         
         primitives.put("display", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 System.out.print(args.getFirst());
                 return Cons.NIL;
             }
@@ -236,7 +236,7 @@ public class Primitives {
         //Vectors
         primitives.put("make-vector", new PrimitiveProc(1, 2) {
             @Override
-            public Node doApply(Cons args) {        
+            public Node doApply(Cons args, boolean forceEvaluation) {        
                 BigInteger size = getInt(args.getFirst());
                 if (args.getSecond() == Cons.NIL)
                     return new Vector(size.intValue());
@@ -249,14 +249,14 @@ public class Primitives {
         
         primitives.put("cons", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return new Cons(args.getFirst(), args.getSecond());
             }
         });
 
         primitives.put("car", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 Cons first = (Cons) args.getFirst();
                 if (first == Cons.NIL)
                     throw new EvalException("Can't take car of nil");
@@ -266,7 +266,7 @@ public class Primitives {
 
         primitives.put("cdr", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 Cons first = (Cons) args.getFirst();
                 if (first == Cons.NIL)
                     throw new EvalException("Can't take cdr of nil");                
@@ -276,7 +276,7 @@ public class Primitives {
 
         primitives.put("set-car!", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 ((Cons) (args.getFirst())).setFirst(args.getSecond());
                 return null;
             }
@@ -284,7 +284,7 @@ public class Primitives {
 
         primitives.put("set-cdr!", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 ((Cons) (args.getFirst())).setRest(args.getSecond());
                 return null;
             }
@@ -292,7 +292,7 @@ public class Primitives {
 
         primitives.put("length", new PrimitiveProc(1, 1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 return new IntLit(((Cons) args.getFirst()).length());
             }
         });
@@ -301,23 +301,23 @@ public class Primitives {
         
         primitives.put("apply", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
-                return ((Proc) args.getFirst()).apply((Cons) args.getSecond());
+            public Node doApply(Cons args, boolean forceEvaluation) {
+                return ((Proc) args.getFirst()).apply((Cons) args.getSecond(), forceEvaluation);
             }
         });
 
         primitives.put("eval", new PrimitiveProc(2, 2) {
             @Override
-            public Node doApply(Cons args) {
-                return args.getFirst().eval((Environment) args.getSecond());
+            public Node doApply(Cons args, boolean forceEvaluation) {
+                return args.getFirst().eval((Environment) args.getSecond(), forceEvaluation);
             }
         });
         
         primitives.put("time", new PrimitiveProc(1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 long start = System.nanoTime();
-                Node result = ((Proc) args.getFirst()).apply(args.getRestAsCons());
+                Node result = ((Proc) args.getFirst()).apply(args.getRestAsCons(), true);
                 System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " microseconds");
                 return result;
             }
@@ -325,7 +325,7 @@ public class Primitives {
         
         primitives.put("make-string", new PrimitiveProc(1) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 String result = "";
                 for (Cons currentCons : args) {
                     result += currentCons.getFirst();
@@ -336,7 +336,7 @@ public class Primitives {
 
         primitives.put("quit", new PrimitiveProc(0, 0) {
             @Override
-            public Node doApply(Cons args) {
+            public Node doApply(Cons args, boolean forceEvaluation) {
                 System.exit(0);
                 return Cons.NIL;
             }
@@ -357,7 +357,7 @@ public class Primitives {
         }
 
         @Override
-        public Node doApply(Cons args) {
+        public Node doApply(Cons args, boolean forceEvaluation) {
             return clazz.isInstance(args.getFirst()) ? BoolLit.TRUE : BoolLit.FALSE;
         }
     }
@@ -379,7 +379,7 @@ public class Primitives {
         }
 
         @Override
-        public Node doApply(Cons args) {
+        public Node doApply(Cons args, boolean forceEvaluation) {
             BigInteger first = getInt(args.getFirst());
             for (Cons currentCons : args.getRestAsCons()) {
                 BigInteger second = getInt(currentCons.getFirst());

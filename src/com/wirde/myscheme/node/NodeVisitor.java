@@ -20,4 +20,6 @@ public interface NodeVisitor {
     void visit(Environment environment);
 
     void visit(Vector vector);
+
+    void visit(Continuation continuation);
 }

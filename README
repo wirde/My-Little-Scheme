@@ -1,3 +1,5 @@
+Proper tail calls through trampolining (not fully tested, but seems to work ok)
+
 Implemented special forms
 -------------------------
 define (including syntactic sugar for lambdas)
@@ -21,7 +23,6 @@ procedure
 
 Next up
 ----
-Proper tail calls
 Macros
 vector
 quasiquotation

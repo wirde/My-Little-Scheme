@@ -17,17 +17,28 @@ public class Lambda extends Proc {
 	}
 
 	@Override
-	public Node apply(Cons args) {
+	public Node apply(Cons args, boolean forceEvaluation) {
 		Environment frame = new Environment(capturedEnv);
 		
 		bindArgumentsToFrame(args, params, frame);
 		
 		//Evaluate the expressions in the body
-		Node result = null;
-		for (Cons currCons : body) {
-			result = currCons.getFirst().eval(frame);
+		Cons currCons = body;
+		while (currCons.getRest() != Cons.NIL) {
+		   currCons.getFirst().eval(frame, true);
+		   currCons = currCons.getRestAsCons();
 		}
-		return result;
+		//If we don't have to force the evaluation, return a Continuation instead and use the trampoline "later". If 
+		//we do need to force the evaluation, trampoline until we get a result.
+		//Should give proper tail-calls...
+		//TODO: Use subclass of Continuation for tail calls?
+		if (forceEvaluation) {
+		    Node result = currCons.getFirst().eval(frame, false);
+		    while (result instanceof Continuation)
+		        result = result.eval(frame, false);
+		    return result;
+		} else 
+		    return new Continuation(currCons.getFirst(), frame);
 	}
 
 	private void bindArgumentsToFrame(Cons args, Node params, Environment frame) {

@@ -134,4 +134,9 @@ public class PrettyPrintVisitor implements NodeVisitor {
     public void visit(Vector vector) {
         print(vector.toString());
     }
+
+    @Override
+    public void visit(Continuation continuation) {
+        print(continuation.toString());
+    }
 }

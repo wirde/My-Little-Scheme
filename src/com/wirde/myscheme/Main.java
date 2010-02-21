@@ -23,7 +23,7 @@ public class Main {
 				Node exp = parser.parseNext();
 				if (exp == null)
 					break;
-				Node evaluatedExp = exp.eval(env);
+				Node evaluatedExp = exp.eval(env, true);
 				if (evaluatedExp == null)
 				    System.out.println("Unspecified return value.");
 				else

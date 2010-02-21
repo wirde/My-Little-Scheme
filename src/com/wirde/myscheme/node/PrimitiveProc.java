@@ -18,16 +18,16 @@ public abstract class PrimitiveProc extends Proc {
     }
 
     @Override
-    public Node apply(Cons args) {
+    public Node apply(Cons args, boolean forceEvaluation) {
         int nrArgs = args.length();
         if (nrArgs < minArgs)
             throw new EvalException("Too few arguments. Expected: " + minArgs + ", got: " + nrArgs);
         if (nrArgs > maxArgs)
             throw new EvalException("Too many arguments. Expected: " + maxArgs + ", got: " + nrArgs);
-        return doApply(args);
+        return doApply(args, forceEvaluation);
     }
 
-    public abstract Node doApply(Cons args);
+    public abstract Node doApply(Cons args, boolean forceEvaluation);
     
     @Override
     public String toString() {

@@ -51,9 +51,10 @@ public class Cons extends Node implements Iterable<Cons> {
         this.rest = rest;
     }
     
-    public Node eval(Environment env) {
+    @Override
+    public Node eval(Environment env, boolean forceEvaluation) {
         SpecialForm special = SpecialForm.toSpecialForm(this);
-        return special.evalForm(this, env);
+        return special.evalForm(this, env, forceEvaluation);
     }
 		
 	@Override
