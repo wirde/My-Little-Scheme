@@ -101,15 +101,12 @@ public enum SpecialForm {
                 if ((condClauses.getRest().equals(Cons.NIL) && predicate.equals(new Ident("else")))
                         ||
                         BoolLit.isTrue(predicate.eval(env, true))) {
-                    Node res = Cons.NIL;
                     Cons expressions = ((Cons) condClauses.getFirst()).getRestAsCons();
                     //TODO: predicate is evaluated twice...
                     if (expressions.getFirst().equals(new Ident("=>")))
                         return ((Proc) expressions.getSecond().eval(env, true)).apply(new Cons(predicate.eval(env, true), Cons.NIL), forceEvaluation);
-                    for (Cons currentCons : expressions) {
-                        res = currentCons.getFirst().eval(env, forceEvaluation);
-                    }
-                    return res;
+                    //evaluate the expressions
+                    return new Closure(Cons.NIL, expressions, env).apply(Cons.NIL, true);
                 }
                 condClauses = condClauses.getRestAsCons();
             }
