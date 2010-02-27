@@ -2,12 +2,12 @@ package com.wirde.myscheme.node;
 
 import com.wirde.myscheme.Environment;
 
-public class Continuation extends Node {
+public class Thunk extends Node {
 
     private final Node expression;
     private final Environment frame;
 
-    public Continuation(Node expression, Environment frame) {
+    public Thunk(Node expression, Environment frame) {
         this.expression = expression;
         this.frame = frame;
     }
@@ -24,6 +24,6 @@ public class Continuation extends Node {
     
     @Override
     public String toString() {
-        return "<continuation>";
+        return "<thunk>";
     }
 }

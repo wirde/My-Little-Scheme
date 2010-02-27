@@ -25,7 +25,7 @@ public enum SpecialForm {
             }
             else if (definee instanceof Cons) {
                 Cons lambdaDef = (Cons) definee;
-                env.bind((Ident) lambdaDef.getFirst(), new Lambda(lambdaDef.getRest(), exp.getRestAsCons().getRestAsCons(), env));
+                env.bind((Ident) lambdaDef.getFirst(), new Closure(lambdaDef.getRest(), exp.getRestAsCons().getRestAsCons(), env));
             } else
                 throw new EvalException("Expected Ident or Cons. Got " + definee.getClass(), exp);
             return null;
@@ -53,7 +53,7 @@ public enum SpecialForm {
     LAMBDA {
         @Override
         public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
-            return new Lambda(exp.getSecond(), exp.getRestAsCons().getRestAsCons(), env);
+            return new Closure(exp.getSecond(), exp.getRestAsCons().getRestAsCons(), env);
         }
     }, 
     SET {
@@ -66,7 +66,7 @@ public enum SpecialForm {
     BEGIN {
         @Override
         public Node evalForm(Cons exp, Environment env, boolean forceEvaluation) {
-            //TODO: create lambda instead...
+            //TODO: create closure instead...
             Cons exps = exp.getRestAsCons();
             Node result = Cons.NIL;
             while (!exps.equals(Cons.NIL)) {
@@ -89,7 +89,7 @@ public enum SpecialForm {
                 args = new Cons(paramArgPair.getSecond().eval(env, true), args);
                 paramList = paramList.getRestAsCons();
             }
-            return new Lambda(params, body, env).apply(args, forceEvaluation);
+            return new Closure(params, body, env).apply(args, forceEvaluation);
         }
     }, 
     COND {

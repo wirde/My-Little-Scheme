@@ -4,13 +4,13 @@ import com.wirde.myscheme.Environment;
 import com.wirde.myscheme.EvalException;
 
 
-public class Lambda extends Proc {
+public class Closure extends Proc {
 
 	private final Cons body;
 	private final Node params;
 	private final Environment capturedEnv;
 
-	public Lambda(Node params, Cons body, Environment env) {
+	public Closure(Node params, Cons body, Environment env) {
 		this.params = params;
 		this.body = body;
 		capturedEnv = env;
@@ -28,17 +28,16 @@ public class Lambda extends Proc {
 		   currCons.getFirst().eval(frame, true);
 		   currCons = currCons.getRestAsCons();
 		}
-		//If we don't have to force the evaluation, return a Continuation instead and use the trampoline "later". If 
+		//If we don't have to force the evaluation, return a thunk instead and use the trampoline "later". If 
 		//we do need to force the evaluation, trampoline until we get a result.
 		//Should give proper tail-calls...
-		//TODO: Use subclass of Continuation for tail calls?
 		if (forceEvaluation) {
 		    Node result = currCons.getFirst().eval(frame, false);
-		    while (result instanceof Continuation)
-		        result = result.eval(frame, false);
+		    while (result instanceof Thunk)
+		        result = result.eval(null, false); 
 		    return result;
 		} else 
-		    return new Continuation(currCons.getFirst(), frame);
+		    return new Thunk(currCons.getFirst(), frame);
 	}
 
 	private void bindArgumentsToFrame(Cons args, Node params, Environment frame) {

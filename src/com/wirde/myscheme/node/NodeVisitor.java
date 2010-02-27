@@ -21,5 +21,5 @@ public interface NodeVisitor {
 
     void visit(Vector vector);
 
-    void visit(Continuation continuation);
+    void visit(Thunk thunk);
 }

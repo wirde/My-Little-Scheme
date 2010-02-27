@@ -136,7 +136,7 @@ public class PrettyPrintVisitor implements NodeVisitor {
     }
 
     @Override
-    public void visit(Continuation continuation) {
-        print(continuation.toString());
+    public void visit(Thunk thunk) {
+        print(thunk.toString());
     }
 }
