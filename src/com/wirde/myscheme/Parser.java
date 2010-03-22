@@ -20,9 +20,9 @@ class Scanner {
 	private final BufferedReader reader;
 	private String currentLine;
 	
-	private static final Pattern identPattern = Pattern.compile("^[a-zA-Z0-9+-?\\*?/!_]+");
-	private static final Pattern intPattern = Pattern.compile("^-?[0-9]+");
-	private static final Pattern strPattern = Pattern.compile("^\".*?\"", Pattern.DOTALL);
+	private static final Pattern IDENT_PATTERN = Pattern.compile("^[a-zA-Z0-9+-?\\*?/!_]+");
+	private static final Pattern INT_PATTERN = Pattern.compile("^-?[0-9]+");
+	private static final Pattern STR_PATTERN = Pattern.compile("^\".*?\"", Pattern.DOTALL);
 	
 	public Scanner(String exp) {
 		this(new StringReader(exp));
@@ -60,16 +60,16 @@ class Scanner {
 			return new Token(TokenType.DOT);
 		}
 
-		if (intPattern.matcher(currentLine).find()) 
-			return new IntToken(new BigInteger(readToken(intPattern)));
+		if (INT_PATTERN.matcher(currentLine).find()) 
+			return new IntToken(new BigInteger(readToken(INT_PATTERN)));
 		
-		if (strPattern.matcher(currentLine).find()) {
-		    String str = readToken(strPattern);
+		if (STR_PATTERN.matcher(currentLine).find()) {
+		    String str = readToken(STR_PATTERN);
 			return new StrToken(str.substring(1, str.length() - 1));
 		}
 		
-		if (identPattern.matcher(currentLine).find())
-			return new IdentToken(readToken(identPattern));
+		if (IDENT_PATTERN.matcher(currentLine).find())
+			return new IdentToken(readToken(IDENT_PATTERN));
 		
 		//Handle multiline strings, probably breaks for weird input
 		currentLine += "\n" + reader.readLine();
