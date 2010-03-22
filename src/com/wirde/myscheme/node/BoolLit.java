@@ -4,7 +4,7 @@ public class BoolLit extends Literal {
 	public static final Node TRUE = new BoolLit();
 	public static final Node FALSE = new BoolLit();
 	
-	private BoolLit() {
+	protected BoolLit() {
 	}
 	
     @Override
