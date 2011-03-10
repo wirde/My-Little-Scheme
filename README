@@ -1,4 +1,4 @@
-Proper tail calls through trampolining (not fully tested, but seems to work ok)
+Proper tail calls through trampolining
 
 Implemented special forms
 -------------------------
@@ -20,9 +20,3 @@ integer
 pair (list)
 bool
 procedure
-
-Next up
-----
-Macros
-vector
-quasiquotation
